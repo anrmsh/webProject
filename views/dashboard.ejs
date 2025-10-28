@@ -1,0 +1,17 @@
+<%- include('layout', { 
+  title: 'Личный кабинет', 
+  body: `
+    <section>
+      <h2>Ваши бронирования</h2>
+      ${bookings.length === 0 
+        ? '<p>У вас пока нет бронирований.</p>' 
+        : bookings.map(b => `
+          <div class="booking-card">
+            <p>Зал: ${b.BanquetHall.hall_name}</p>
+            <p>Дата: ${b.date}</p>
+            <p>Статус: ${b.status}</p>
+          </div>
+        `).join('')}
+    </section>
+  `
+}) %>

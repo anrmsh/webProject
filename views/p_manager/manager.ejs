@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Менеджер Панель</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Панель менеджера</h1>
+        <nav>
+            <a href="/logout">Выйти</a>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Добро пожаловать, <%= user.first_name %> <%= user.last_name %>!</h2>
+
+        <section>
+            <h3>Управление заказами</h3>
+            <ul>
+                <li><a href="/manager/orders">Список заказов</a></li>
+                <li><a href="/manager/halls">Управление залами</a></li>
+            </ul>
+        </section>
+
+        <section>
+            <h3>Отчеты</h3>
+            <p>Здесь можно будет добавлять отчеты и статистику для менеджера</p>
+        </section>
+    </main>
+</body>
+</html>

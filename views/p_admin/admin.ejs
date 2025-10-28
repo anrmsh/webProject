@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Админ Панель</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Панель администратора</h1>
+        <nav>
+            <a href="/logout">Выйти</a>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Добро пожаловать, <%= user.first_name %> <%= user.last_name %>!</h2>
+
+        <section>
+            <h3>Управление пользователями</h3>
+            <ul>
+                <li><a href="/admin/users">Список пользователей</a></li>
+                <li><a href="/admin/roles">Управление ролями</a></li>
+            </ul>
+        </section>
+
+        <section>
+            <h3>Статистика</h3>
+            <p>Здесь можно будет добавить графики и отчеты</p>
+        </section>
+    </main>
+</body>
+</html>

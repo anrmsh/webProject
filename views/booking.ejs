@@ -1,0 +1,21 @@
+<%- include('layout', { 
+  title: 'Бронирование', 
+  body: `
+    <section>
+      <h2>Бронирование зала: ${hall.hall_name}</h2>
+      <p>Цена: ${hall.price} BYN</p>
+      <form action="/bookings" method="POST">
+        <input type="hidden" name="hall_id" value="${hall.hall_id}">
+        <label>Дата:</label>
+        <input type="date" name="date" required>
+        <label>Время начала:</label>
+        <input type="time" name="start_time" required>
+        <label>Время окончания:</label>
+        <input type="time" name="end_time" required>
+        <label>Количество гостей:</label>
+        <input type="number" name="guest_count" required>
+        <button type="submit">Забронировать</button>
+      </form>
+    </section>
+  `
+}) %> 

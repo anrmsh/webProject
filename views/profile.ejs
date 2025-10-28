@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Профиль пользователя</title>
+  <link rel="stylesheet" href="/css/profile.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+  <!-- ======== HEADER для профиля ======== -->
+  <header class="profile-header">
+    <div class="logo">BanquetBook<span>.</span></div>
+
+    <nav class="profile-nav">
+      <a href="/my-banquets">Мои банкеты</a>
+      <a href="/waiting-list">Лист ожидания</a>
+      <a href="/notifications" class="notif">
+        <i class="fa-regular fa-bell"></i>
+      </a>
+      <a href="/profile" class="active">Мой профиль</a>
+      <a href="/index" class="back-btn"><i class="fa-solid fa-arrow-left"></i> На главную</a>
+    </nav>
+
+    <div class="logout-icon">
+      <a href="/logout" title="Выйти"><i class="fa-solid fa-right-from-bracket"></i></a>
+    </div>
+  </header>
+
+  <!-- ======== ОСНОВНОЕ СОДЕРЖИМОЕ ======== -->
+  <main class="profile-page">
+    <h2>Профиль пользователя</h2>
+
+    <% if (user) { %>
+      <div class="profile-info">
+        <p><strong>Имя:</strong> <%= user.first_name %></p>
+        <p><strong>Фамилия:</strong> <%= user.last_name %></p>
+        <p><strong>Телефон:</strong> <%= user.phone %></p>
+        <p><strong>Тип клиента:</strong> <%= user.client_type === 'individual' ? 'Физическое лицо' : 'Юридическое лицо' %></p>
+      </div>
+
+      <div class="profile-actions">
+        <a href="/edit-profile" class="btn">Редактировать профиль</a>
+      </div>
+
+    <% } else { %>
+      <p>Вы не авторизованы. <a href="/login">Войти</a></p>
+    <% } %>
+  </main>
+
+</body>
+</html>

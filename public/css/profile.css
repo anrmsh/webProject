@@ -1,0 +1,144 @@
+/* ======== ОБЩИЕ НАСТРОЙКИ ======== */
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #f4f4f9;
+  margin: 0;
+  color: #333;
+}
+
+/* ======== HEADER ======== */
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #1e1e2f;
+  color: #fff;
+  padding: 15px 40px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.logo span {
+  color: #ffb347;
+}
+
+.profile-nav {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.profile-nav a {
+  color: #ddd;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.profile-nav a:hover,
+.profile-nav a.active {
+  color: #ffb347;
+}
+
+.profile-nav .notif i {
+  font-size: 20px;
+}
+
+/* ======== Logout Icon ======== */
+.logout-icon a {
+  color: #fff;
+  font-size: 22px;
+  transition: color 0.3s, transform 0.2s;
+}
+
+.logout-icon a:hover {
+  color: #ffb347;
+  transform: translateY(-2px);
+}
+
+/* ======== ОСНОВНОЕ СОДЕРЖИМОЕ ======== */
+.profile-page {
+  max-width: 700px;
+  margin: 80px auto;
+  background: #fff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.profile-page h2 {
+  font-size: 28px;
+  margin-bottom: 25px;
+  color: #222;
+}
+
+.profile-info {
+  text-align: left;
+  margin: 20px 0 40px 0;
+}
+
+.profile-info p {
+  font-size: 16px;
+  margin: 10px 0;
+  border-left: 4px solid #ffb347;
+  padding-left: 10px;
+  background: #fafafa;
+  border-radius: 6px;
+}
+
+.profile-actions {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.btn {
+  background: #ffb347;
+  color: #fff;
+  padding: 12px 25px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.btn:hover {
+  background: #ffa12b;
+  transform: translateY(-2px);
+}
+
+/* ======== ADAPTIVE ======== */
+@media (max-width: 768px) {
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+    padding: 20px;
+  }
+
+  .profile-nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .profile-page {
+    margin: 40px 15px;
+    padding: 25px;
+  }
+
+  .logout-icon {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+  }
+}

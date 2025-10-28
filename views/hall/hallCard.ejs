@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <title><%= hall.hall_name %> | Restoplace</title>
+
+    <!-- Основные стили -->
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/hallCard.css" />
+
+    <!-- Иконки и Flatpickr -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  </head>
+  <body>
+    <header>
+      <input type="checkbox" id="toggler" />
+      <label for="toggler" class="fas fa-bars"></label>
+      <a href="/" class="logo">BanquetBooking<span>.</span></a>
+
+      <nav class="navbar">
+        <a href="/">Главная</a>
+        <a href="/halls">Залы</a>
+        <a href="#contact-info">Контакты</a>
+      </nav>
+
+      <div class="icons">
+        <a href="#" class="fas fa-heart"></a>
+        <% if (user) { %>
+        <a href="/profile" class="fas fa-user" title="Профиль"></a>
+        <a href="/logout" title="Выйти"
+          ><i class="fa-solid fa-right-from-bracket"></i
+        ></a>
+        <% } else { %>
+        <a href="/login" class="fas fa-user" title="Войти"></a>
+        <% } %>
+      </div>
+    </header>
+
+    <!-- Карточка зала -->
+    <section class="hall-card">
+      <div class="hall-top">
+        <img src="<%= hall.image_path %>" alt="<%= hall.hall_name %>" />
+        <div class="hall-info">
+          <h2><%= hall.hall_name %></h2>
+          <div class="additional-info">
+            <p class="hall-rating">
+              <strong>Рейтинг:</strong><%= hall.rating %> ⭐
+            </p>
+            <p><strong>Вместимость:</strong> <%= hall.capacity %> гостей</p>
+            <p><strong>Цена за час:</strong> <%= hall.price %> BYN</p>
+            <p><strong>Адрес:</strong> <%= hall.address %></p>
+            <p class="hall-description"><%= hall.description %></p>
+          </div>
+          <!-- <p><strong>Вместимость:</strong> <%= hall.capacity %> гостей</p>
+        <p><strong>Цена за час:</strong> <%= hall.price %> BYN</p>
+        <p><strong>Адрес:</strong> <%= hall.address %></p>
+        <p class="hall-description"><%= hall.description %></p> -->
+          <button class="btn" id="bookBtn">Забронировать</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Модальное окно бронирования -->
+    <div class="modal" id="bookingModal">
+      <div class="modal-content">
+        <h3>Бронирование зала</h3>
+        <!-- <form id="bookingForm">
+        <input type="hidden" name="hall_id" value="<%= hall.hall_id %>">
+
+        <label>Дата</label>
+        <input type="text" id="datePicker" name="date" required>
+
+        <label>Время начала</label>
+        <input type="time" name="start_time" required>
+
+        <label>Время окончания</label>
+        <input type="time" name="end_time" required>
+
+        <label>Количество гостей</label>
+        <input type="number" name="guest_count" min="1" max="<%= hall.capacity %>" required>
+
+        <label>Выберите дополнительные услуги</label>
+        <div id="servicesList">
+          <% services.forEach(service => { %>
+            <div class="service-item">
+              <input type="checkbox" class="service-checkbox"
+                     data-price="<%= service.price %>"
+                     name="services"
+                     value="<%= service.service_id %>">
+              <span><%= service.service_name %> (+<%= service.price %> BYN)</span>
+            </div>
+          <% }) %>
+        </div>
+
+        <h4 class="total-text">Общая стоимость: <span id="totalPrice"><%= hall.price %></span> BYN</h4>
+
+        <button type="submit" class="btn">Подтвердить бронирование</button>
+        <button type="button" id="waitListBtn" class="btn btn-secondary">В лист ожидания</button>
+      </form> -->
+        <form id="bookingForm" action="/bookings" method="POST">
+          <input type="hidden" name="hall_id" value="<%= hall.hall_id %>" />
+
+          <label>Дата</label>
+          <input type="text" id="datePicker" name="date" required />
+
+          <label>Время начала</label>
+          <input type="time" name="start_time" required />
+
+          <label>Время окончания</label>
+          <input type="time" name="end_time" required />
+
+          <label>Количество гостей</label>
+          <input
+            type="number"
+            name="guest_count"
+            min="1"
+            max="<%= hall.capacity %>"
+            required
+          />
+
+          <label>Выберите дополнительные услуги</label>
+          <div id="servicesList">
+            <% services.forEach(service => { %>
+            <div class="service-item">
+              <input
+                type="checkbox"
+                class="service-checkbox"
+                data-price="<%= service.price %>"
+                name="services"
+                value="<%= service.service_id %>"
+              />
+              <span
+                ><%= service.service_name %> (+<%= service.price %> BYN)</span
+              >
+            </div>
+            <% }) %>
+          </div>
+
+          <h4 class="total-text">
+            Общая стоимость: <span id="totalPrice"><%= hall.price %></span> BYN
+          </h4>
+
+          <button type="submit" class="btn">Подтвердить бронирование</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Блок рекомендаций -->
+    <section class="recommendations">
+      <h2 class="heading">Похожие <span>залы</span></h2>
+      <div class="recommendation-list">
+        <% recommendations.forEach(r => { %>
+        <div class="recommendation-card">
+          <img src="<%= r.image_path %>" alt="<%= r.hall_name %>" />
+          <div class="rec-info">
+            <h3><%= r.hall_name %></h3>
+            <p><%= r.price %> BYN / час</p>
+            <a href="/halls/<%= r.hall_id %>" class="btn">Подробнее</a>
+          </div>
+        </div>
+        <% }) %>
+      </div>
+    </section>
+
+    <script>
+      window.__INITIAL_DATA__ = {
+        hall: <%- JSON.stringify(hall) %>,
+        services: <%- JSON.stringify(services) %>,
+        disabledDates: <%- JSON.stringify(disabledDates) %>
+      };
+    </script>
+    <script src="/script/hallCardScript.js"></script>
+  </body>
+</html>

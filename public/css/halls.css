@@ -1,0 +1,324 @@
+body {
+  font-family: "Arial", sans-serif;
+  background: #fafafa;
+  margin: 0;
+  padding: 0;
+}
+
+.filters {
+  background: #fff;
+  padding: 15px;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  font-size: 0.9rem;
+}
+
+.filters input,
+.filters select,
+.filters button {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+/* вап */
+.capacity-filter input,
+.price-filter input {
+  width: 80px;          /* задаём компактную ширину */
+  padding: 8px 8px;     /* уменьшаем внутренние отступы */
+  font-size: 1.2rem;      /* уменьшаем размер шрифта */
+  box-sizing: border-box; 
+  margin-left: 5px; 
+}
+
+.capacity-filter,
+.price-filter {
+  display: flex;
+  align-items: center;
+  gap: 5px;  /* расстояние между label и input */
+}
+
+#checkDate {
+  padding: 5px 10px;
+  font-size: 0.9rem;
+}
+
+.filters label {
+  font-size:1.5rem;
+}
+
+
+.hall-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.hall-card {
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.hall-card:hover {
+  transform: scale(1.03);
+}
+
+.price span {
+  font-size: 1.4rem;
+  color: #999;
+  text-decoration: line-through;
+  margin-left: 0.5rem;
+}
+
+img .icons a {
+  flex: 1;
+  height: 5rem;
+  line-height: 5rem;
+  font-size: 2rem;
+  background: var(--pink);
+  color: #fff;
+  text-align: center;
+}
+
+img .icons .cart-btn {
+  border-left: 0.1rem solid #fff7;
+  border-right: 0.1rem solid #fff7;
+}
+
+.icons a:hover {
+  background: #333;
+}
+
+.hall-info h3 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.hall-info p {
+  font-size: 1.4rem;
+  color: #666;
+}
+
+.hall-image {
+  position: relative;
+  height: 180px;
+  overflow: hidden;
+  transform: scale(1.05);
+}
+
+.hall-image img .icons {
+  position: absolute;
+  bottom: -6rem;
+  left: 0;
+  right: 0;
+  display: flex;
+  transition: bottom 0.3s ease;
+}
+
+.hall-card:hover .image img .icons {
+  bottom: 0;
+}
+
+.hall-card .img .icons .cart-btn {
+  border-left: 0.1rem solid #fff7;
+  border-right: 0.1rem solid #fff7;
+}
+
+.hall-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hall-image .overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s;
+}
+
+.hall-card:hover .overlay {
+  opacity: 1;
+}
+
+:root {
+  --pink: #ae3962;
+  --shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+/* Контейнер всех карточек */
+.hall-list {
+  padding: 2rem;
+}
+
+.hall-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2.5rem;
+  justify-content: center;
+}
+
+/* Карточка */
+.hall-card {
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: var(--shadow);
+  border: 0.1rem solid rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  height: 400px;
+  position: relative;
+}
+
+.hall-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Фото зала */
+.hall-image {
+  position: relative;
+  text-align: center;
+  overflow: hidden;
+  height: 200px;
+}
+
+.hall-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.hall-card:hover .hall-image img {
+  transform: scale(1.05);
+}
+
+/* Кнопка "Подробнее" появляется при наведении */
+.hall-image .cart-btn {
+  position: absolute;
+  bottom: -5rem;
+  left: 0;
+  right: 0;
+  height: 4rem;
+  line-height: 4rem;
+  font-size: 1.5rem;
+  background: var(--pink);
+  color: #fff;
+  text-align: center;
+  text-decoration: none;
+  transition: bottom 0.3s ease, background 0.3s ease;
+  border-top: 0.1rem solid #fff7;
+  border-bottom: 0.1rem solid #fff7;
+}
+
+.hall-card:hover .hall-image .cart-btn {
+  bottom: 0;
+}
+
+.hall-image .cart-btn:hover {
+  background: #333;
+}
+
+/* Контент карточки */
+.hall-info {
+  padding: 3rem;
+  text-align: center;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.hall-info p {
+  text-align: left;
+  display: flex;
+  flex-direction: row;
+  font-size: 1.8rem;
+}
+
+.hall-info h3 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 2rem;
+  color: var(--pink);
+  font-weight: bold;
+}
+
+.hall-info p strong {
+  color: #222;
+}
+
+.hall-info .price {
+  font-size: 2rem;
+  color: var(--pink);
+  font-weight: bold;
+  margin-bottom: 0.1rem;
+}
+
+.hall-info .price span {
+  font-size: 1.4rem;
+  color: #999;
+  text-decoration: line-through;
+  margin-left: 0.5rem;
+}
+
+.no-data {
+  text-align: center;
+  font-size: 1.6rem;
+  color: #666;
+  grid-column: 1 / -1;
+}
+
+#checkDate {
+  position: relative;
+  overflow: hidden;
+  padding: 10px 20px;
+  font-size: 1.4rem;
+  border: none;
+  border-radius: 5px;
+  background: var(--pink);
+  color: #fff;
+  cursor: pointer;
+  transition: color 0.5s ease;
+}
+
+#checkDate::before {
+  content: "";
+  position: absolute;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #333; 
+  transition: top 0.3s ease;
+  z-index: 0;
+}
+
+#checkDate:hover::before {
+  top: 0; 
+}
+
+#checkDate span {
+  position: relative;
+  z-index: 1;
+  transition: color 0.3s ease;
+}
+
+#checkDate:hover span {
+  color: #fff; 
+}

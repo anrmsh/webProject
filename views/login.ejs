@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Вход и регистрация</title>
+    <link rel="stylesheet" href="/css/loginStyle.css" />
+    <link
+      href="https://cdn.boxicons.com/fonts/basic/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.boxicons.com/fonts/brands/boxicons-brands.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container" id="mainContainer">
+      <div class="form-box login">
+        <form action="/login" method="POST" id="loginForm">
+          <h1>Вход</h1>
+
+          <div class="input-box">
+            <input type="text" name="login" placeholder="Логин" required />
+            <i class="bx bxs-user"></i>
+          </div>
+          <div class="input-box">
+            <input
+              type="password"
+              name="password"
+              placeholder="Пароль"
+              required
+            />
+            <i class="bx bxs-lock"></i>
+          </div>
+          <!-- <div class="forgot-link">
+          <a href="#">Забыли пароль?</a>
+        </div> -->
+          <% if (message) { %>
+          <div class="error-message"><%= message %></div>
+          <script>
+            window.serverMessage = "<%= message %>";
+          </script>
+          <% } %>
+          <button type="submit" class="btn">Войти</button>
+        </form>
+      </div>
+
+      <!-- ======== Форма регистрации ======== -->
+      <div class="form-box register">
+        <form action="/register" method="POST">
+          <h1>Регистрация</h1>
+
+          <div class="input-box">
+            <input type="text" name="first_name" placeholder="Имя" required />
+            <i class="bx bxs-user"></i>
+          </div>
+
+          <div class="input-box">
+            <input
+              type="text"
+              name="last_name"
+              placeholder="Фамилия"
+              required
+            />
+            <i class="bx bxs-user"></i>
+          </div>
+
+          <div class="input-box">
+            <input type="text" name="login" placeholder="Логин" required />
+            <i class="bx bxs-user"></i>
+          </div>
+
+          <div class="input-box">
+            <input
+              type="password"
+              name="password"
+              placeholder="Пароль"
+              required
+            />
+            <i class="bx bxs-lock"></i>
+          </div>
+
+          <div class="input-box">
+            <input type="tel" name="phone" placeholder="Телефон" />
+            <i class="bx bxs-phone"></i>
+          </div>
+
+          <div class="input-box">
+            <select name="client_type" id="client_type" required>
+              <option value="" disabled selected>Тип клиента</option>
+              <option value="individual">Физическое лицо</option>
+              <option value="corporate">Юридическое лицо</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn">Зарегистрироваться</button>
+        </form>
+      </div>
+
+      <!-- ======== Блок переключения (Toggle) ======== -->
+      <div class="toggle-box">
+        <div class="toggle-pannel toggle-left">
+          <h1>BanquetBook</h1>
+          <p>Нет аккаунта?</p>
+          <button class="btn register-btn" id="registerToggle">
+            Регистрация
+          </button>
+        </div>
+        <div class="toggle-pannel toggle-right">
+          <h1>Добро пожаловать!</h1>
+          <p>Уже есть аккаунт?</p>
+          <button class="btn login-btn" id="loginToggle">Войти</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="/script/scriptLogin.js"></script>
+    <!-- <script>
+      // ======== Переключение между входом и регистрацией ========
+      const container = document.getElementById("mainContainer");
+      const registerBtn = document.getElementById("registerToggle");
+      const loginBtn = document.getElementById("loginToggle");
+
+      registerBtn.addEventListener("click", () =>
+        container.classList.add("active")
+      );
+      loginBtn.addEventListener("click", () =>
+        container.classList.remove("active")
+      );
+    </script>  -->
+  </body>
+</html>

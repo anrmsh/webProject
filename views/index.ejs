@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Банкетная система | Главная</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+
+  <body>
+    <!-- 🔹 Шапка -->
+    <header>
+      <input type="checkbox" id="toggler" />
+      <label for="toggler" class="fas fa-bars"></label>
+      <a href="/" class="logo">BanquetBook<span>.</span></a>
+
+      <nav class="navbar">
+        <a href="/">Главная</a>
+        <a href="#about">О нас</a>
+        <a href="/halls">Залы</a>
+        <a href="#contact-info">Контакты</a>
+      </nav>
+
+      <div class="icons">
+        <a href="/favorites" class="fas fa-heart" title="Избранное"></a>
+        <a href="/cart" class="fas fa-shopping-cart" title="Брони"></a>
+        <% if (user) { %>
+        <a href="/profile" class="fas fa-user" title="Профиль"></a>
+        <% } else { %>
+        <a href="/login" class="fas fa-user" title="Войти"></a>
+        <% } %>
+      </div>
+    </header>
+
+    <!-- 🔹 Главная -->
+    <section class="home" id="home">
+      <div class="content">
+        <h3>Сервис бронирования банкетных залов</h3>
+        <span>Для свадьбы, корпоратива или дня рождения</span>
+        <p>
+          Подберите зал, в котором будет уютно и красиво. У нас — только
+          проверенные площадки с атмосферой и вкусным меню, а также с
+          возможностью заказать фото- и видеосъёмку, ведущих и другие услуги для
+          идеального праздника
+        </p>
+        <a href="/halls" class="btn">Посмотреть залы</a>
+      </div>
+    </section>
+
+    <!-- 🔹 О нас -->
+    <section class="about" id="about">
+      <h1 class="heading"><span>О</span> нас</h1>
+
+      <div class="row">
+        <div class="video-container">
+          <img src="/img/Logo.jpg" alt="О нас" />
+          <h3>Лучшие залы для ваших событий</h3>
+        </div>
+        <div class="content">
+          <h3>Почему выбирают нас?</h3>
+          <p>
+            Мы сотрудничаем только с проверенными залами и ресторанами,
+            предоставляя актуальную информацию о ценах, меню и доступности.
+          </p>
+          <p>
+            Наш сервис помогает быстро забронировать место без лишних звонков.
+          </p>
+          <a href="/about" class="btn">Подробнее</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 🔹 Преимущества -->
+    <section class="icons-container">
+      <div class="icons">
+        <img src="/images/delivery.svg" alt="" />
+        <div class="info">
+          <h3>Удобное бронирование</h3>
+          <span>онлайн 24/7</span>
+        </div>
+      </div>
+
+      <div class="icons">
+        <img src="/images/support.svg" alt="" />
+        <div class="info">
+          <h3>Поддержка</h3>
+          <span>поможем выбрать зал</span>
+        </div>
+      </div>
+
+      <div class="icons">
+        <img src="/images/gift.svg" alt="" />
+        <div class="info">
+          <h3>Акции и скидки</h3>
+          <span>для постоянных клиентов</span>
+        </div>
+      </div>
+
+      <div class="icons">
+        <img src="/images/security.svg" alt="" />
+        <div class="info">
+          <h3>Надёжные партнёры</h3>
+          <span>проверенные площадки</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 🔹 Раздел с залами -->
+    <section class="products" id="products">
+      <h1 class="heading">Наши <span>залы</span></h1>
+
+      <div class="box-container">
+        <% if (halls && halls.length > 0) { %> <% halls.forEach(hall => { %>
+        <div class="box">
+          <% if (hall.discount) { %>
+          <span class="discount">-<%= hall.discount %>%</span>
+          <% } %>
+          <div class="image">
+            <img
+              src="<%= hall.image_path || '/images/default-hall.jpg' %>"
+              alt="<%= hall.hall_name %>"
+            />
+            <div class="icons">
+              <a href="/halls/<%= hall.hall_id %>" class="cart-btn"
+                >Подробнее</a
+              >
+            </div>
+          </div>
+          <div class="content">
+            <h3><%= hall.hall_name %></h3>
+            <p><%= hall.description %></p>
+            <div class="price">
+              <%= hall.price %> BYN <% if (hall.old_price) { %>
+              <span><%= hall.old_price %> BYN</span>
+              <% } %>
+            </div>
+            <p><strong>Вместимость:</strong> <%= hall.capacity %> чел.</p>
+          </div>
+        </div>
+        <% }) %> <% } else { %>
+        <p class="no-data">Нет доступных залов</p>
+        <% } %>
+      </div>
+    </section>
+
+    <!-- 🔹 Подвал -->
+    <footer class="footer" id="contact-info">
+      <div class="box-container">
+        <div class="box">
+          <h3>Навигация</h3>
+          <a href="/">Главная</a>
+          <a href="/about">О нас</a>
+          <a href="/halls">Залы</a>
+        </div>
+
+        <div class="box">
+          <h3>Контакты</h3>
+          <a href="tel:+375293256594">+375 (29) 325-65-94</a>
+          <a href="#">Минск, пр. Независимости, 46</a>
+          <a href="mailto:best@mail.ru">best@mail.ru</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

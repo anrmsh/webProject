@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Сообщение</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f0f0f0; }
+    .message-box { background: #fff; padding: 30px; border-radius: 8px; text-align: center; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
+    .message-box h2 { margin-bottom: 15px; }
+    .message-box a { display: inline-block; margin-top: 10px; text-decoration: none; color: #fff; background: #007BFF; padding: 10px 20px; border-radius: 5px; }
+    .message-box a:hover { background: #0056b3; }
+  </style>
+</head>
+<body>
+  <div class="message-box">
+    <h2><%= title %></h2>
+    <p><%= message %></p>
+    <a href="<%= link %>">Назад</a>
+  </div>
+</body>
+</html>
