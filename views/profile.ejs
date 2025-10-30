@@ -1,52 +1,186 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-  <meta charset="UTF-8" />
-  <title>Профиль пользователя</title>
-  <link rel="stylesheet" href="/css/profile.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Профиль пользователя</title>
+    <link rel="stylesheet" href="/css/profile.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <!-- ======== HEADER ======== -->
+    <header>
+      <input type="checkbox" id="toggler" />
+      <label for="toggler" class="fas fa-bars"></label>
+      <a href="/" class="logo">BanquetBook<span>.</span></a>
 
-  <!-- ======== HEADER для профиля ======== -->
-  <header class="profile-header">
-    <div class="logo">BanquetBook<span>.</span></div>
+      <nav class="navbar">
+        <a href="/">Главная</a>
+        <a href="#about">О нас</a>
+        <a href="/halls">Залы</a>
+        <a href="#contact-info">Контакты</a>
+      </nav>
 
-    <nav class="profile-nav">
-      <a href="/my-banquets">Мои банкеты</a>
-      <a href="/waiting-list">Лист ожидания</a>
-      <a href="/notifications" class="notif">
-        <i class="fa-regular fa-bell"></i>
-      </a>
-      <a href="/profile" class="active">Мой профиль</a>
-      <a href="/index" class="back-btn"><i class="fa-solid fa-arrow-left"></i> На главную</a>
-    </nav>
-
-    <div class="logout-icon">
-      <a href="/logout" title="Выйти"><i class="fa-solid fa-right-from-bracket"></i></a>
-    </div>
-  </header>
-
-  <!-- ======== ОСНОВНОЕ СОДЕРЖИМОЕ ======== -->
-  <main class="profile-page">
-    <h2>Профиль пользователя</h2>
-
-    <% if (user) { %>
-      <div class="profile-info">
-        <p><strong>Имя:</strong> <%= user.first_name %></p>
-        <p><strong>Фамилия:</strong> <%= user.last_name %></p>
-        <p><strong>Телефон:</strong> <%= user.phone %></p>
-        <p><strong>Тип клиента:</strong> <%= user.client_type === 'individual' ? 'Физическое лицо' : 'Юридическое лицо' %></p>
+      <div class="icons">
+        <a href="/favorites" class="fas fa-heart" title="Избранное"></a>
+        <a href="/cart" class="fas fa-shopping-cart" title="Брони"></a>
+        <% if (user) { %>
+        <a href="/profile" class="fas fa-user" title="Профиль"></a>
+        <a href="/logout" class="fas fa-right-from-bracket" title="Выйти"></a>
+        <% } else { %>
+        <a href="/login" class="fas fa-user" title="Войти"></a>
+        <% } %>
       </div>
+    </header>
 
-      <div class="profile-actions">
-        <a href="/edit-profile" class="btn">Редактировать профиль</a>
-      </div>
+    <!-- ======== MAIN CONTENT ======== -->
+    <main>
+      <h2 class="heading">Профиль пользователя</h2>
 
-    <% } else { %>
+      <% if (user) { %>
+      <section class="profile-info">
+        <div class="box-container">
+          <!-- Личные данные -->
+          <div class="box">
+            <h3>Личные данные</h3>
+            <p><strong>Имя:</strong> <%= user.first_name %></p>
+            <p><strong>Фамилия:</strong> <%= user.last_name %></p>
+
+            <% if (client) { %>
+            <p><strong>Телефон:</strong> <%= client.phone %></p>
+            <p>
+              <strong>Тип клиента:</strong>
+              <%= client.client_type === 'individual' ? 'Физическое лицо' :
+              'Юридическое лицо' %>
+            </p>
+            <% } else { %>
+            <p>Клиент не найден</p>
+            <% } %>
+
+            <a href="/edit-profile" class="btn">Редактировать профиль</a>
+          </div>
+
+          <!-- Уведомления -->
+          <div class="box">
+            <h3>Уведомления</h3>
+            <% if (notifications && notifications.length > 0) { %> <%
+            notifications.forEach(function(note) { %>
+            <p><i class="fa-solid fa-bell"></i> <%= note %></p>
+            <% }) %> <% } else { %>
+            <p>Нет уведомлений</p>
+            <% } %>
+          </div>
+        </div>
+      </section>
+
+      <!-- Мои брони -->
+      <section class="banquets products">
+        <h3 class="heading">Мои брони</h3>
+
+        <!-- Фильтр -->
+        <div class="filter-buttons">
+          <button class="filter-btn" data-filter="all"><span>Все</span></button>
+          <button class="filter-btn" data-filter="pending">
+            <span>Ожидают подтверждения</span>
+          </button>
+          <button class="filter-btn" data-filter="confirmed">
+            <span>Подтвержденные</span>
+          </button>
+          <button class="filter-btn" data-filter="cancelled">
+            <span>Отмененные</span>
+          </button>
+          <button class="filter-btn" data-filter="waiting_list">
+            <span>Лист ожидания</span>
+          </button>
+          <button class="filter-btn" data-filter="waiting_confirmation">
+            <span>Ждут подтверждения</span>
+          </button>
+          <button class="filter-btn" data-filter="past">
+            <span>Прошедшие</span>
+          </button>
+        </div>
+
+        <div class="box-container">
+          <% if (bookings && bookings.length > 0) { %>
+          <%bookings.forEach(function(b) { 
+            let statusText = ''; 
+            let statusColor  = ''; 
+            if (b.status === 'pending') { 
+              statusText ='Ожидает подтверждения'; 
+              statusColor = 'gray'; 
+            } else if (b.status === 'confirmed') { 
+              statusText = 'Подтверждено'; 
+              statusColor = 'green'; }
+            else if (b.status === 'cancelled') { 
+            statusText = 'Отменено';
+            statusColor = 'red'; 
+            } else if (b.status === 'waiting_list') {
+            statusText = 'Лист ожидания'; 
+            statusColor = 'gray'; } else if
+            (b.status === 'waiting_confirmation') { 
+            statusText = 'Ждут подтверждения'; statusColor = 'orange'; } %>
+
+          <div class="box booking-box"        data-status="<%= b.status %>"
+            data-date="<%= b.date %>"
+            data-id="<%= b.booking_id %>"
+            data-last-rating="<%= b.userRating || 0 %>"
+            data-hall-id="<%= b.banquetHall ? b.banquetHall.hall_id : '' %>">
+            <div class="image">
+              <% if (b.banquetHall && b.banquetHall.image_path) { %>
+              <img
+                src="<%= b.banquetHall.image_path %>"
+                alt="<%= b.banquetHall.hall_name %>"
+              />
+              <% } else { %>
+              <img
+                src="https://via.placeholder.com/300x230.png?text=Banquet+Hall"
+                alt="Banquet Hall"
+              />
+              <% } %>
+            </div>
+
+            <div class="content">
+              <h3>
+                <%= b.banquetHall ? b.banquetHall.hall_name : 'Без названия' %>
+              </h3>
+              <p><strong>Дата:</strong> <%= b.date %></p>
+              <p>
+                <strong>Время:</strong> <%= b.start_time %> - <%= b.end_time %>
+              </p>
+
+              <p><strong>Гостей:</strong> <%= b.guest_count %></p>
+
+              <p>
+                <strong>Статус:</strong>
+                <span class="status-text"><%= statusText %></span>
+              </p>
+
+              <% if (b.confirmable) { %>
+              <button class="confirm-btn" data-id="<%= b.booking_id %>">
+                Подтвердить
+              </button>
+              <% } %> <% if (b.editable) { %>
+              <a href="/edit-booking/<%= b.booking_id %>" class="btn"
+                >Изменить</a
+              >
+
+              <% } else { %>
+              <p>Редактирование недоступно (менее 7 дней)</p>
+              <% } %>
+            </div>
+          </div>
+          <% }) %> <% } else { %>
+          <p>У вас пока нет бронирований</p>
+          <% } %>
+        </div>
+      </section>
+      <% } else { %>
       <p>Вы не авторизованы. <a href="/login">Войти</a></p>
-    <% } %>
-  </main>
+      <% } %>
+    </main>
 
-</body>
+    <script src="/script/profileScript.js"></script>
+  </body>
 </html>

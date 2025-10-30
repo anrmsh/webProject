@@ -14,7 +14,7 @@ User.belongsTo(Role, { foreignKey: 'role_id' });
 
 User.hasOne(Client, { foreignKey: 'user_id' });
 Client.belongsTo(User, { foreignKey: 'user_id' });
-
+ 
 User.hasMany(BanquetHall, { foreignKey: 'manager_id' });
 BanquetHall.belongsTo(User, { as: 'manager', foreignKey: 'manager_id' });
 

@@ -3,7 +3,9 @@ import dotenv from 'dotenv';
 import { sequelize } from './config/database.js';
 import authRoutes from './routes/authRoutes.js';
 import hallRoutes from './routes/hallRoutes.js';
-import mainRoutes from './routes/mainRoutes.js'; 
+import mainRoutes from './routes/mainRoutes.js';
+import clientRoutes from './routes/clientRoutes.js';
+import ratingRoutes from './routes/ratingRoutes.js';
 import bookingRoutes from './routes/bookingRoutes.js'
 import { authMiddleware } from './middleware/middleware.js';
 import cookieParser from 'cookie-parser';
@@ -25,6 +27,8 @@ app.use('/', authRoutes);
 app.use('/', mainRoutes);
 app.use('/', hallRoutes);
 app.use('/', bookingRoutes);
+app.use('/', clientRoutes);
+app.use('/', ratingRoutes);
 
 // app.use('/bookings', bookingRoutes);
 

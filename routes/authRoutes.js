@@ -11,12 +11,8 @@ router.get("/login", (req, res) => {
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 
-router.get('/profile', authMiddleware, (req, res) => {
-    if (!req.user) {
-        return res.redirect('/login');
-    }
-    res.render('profile', { user: req.user });
-});
+//router.get('/profile', authMiddleware, getProfile);
+
 
 
 router.get('/admin', authMiddleware, (req, res) => {

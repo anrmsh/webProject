@@ -11,7 +11,7 @@ export const getHallDetails = async (req, res) => {
     const bookings = await Booking.findAll({
         where: { hall_id: hallId, status: { [Op.not]: 'cancelled' } }, attributes: ['date']
     });
-
+  
     const disabledDates = bookings.map(b => b.date);
 
     const recommendations = await BanquetHall.findAll({
@@ -132,4 +132,32 @@ export const addToWaitingList = async (req, res) => {
         console.error(err);
         res.status(500).json({ success: false, message: 'Ошибка при добавлении в лист ожидания.' });
     }
+};
+
+
+export const updateStatusBookingConfirm = async (req, res) => {
+  const bookingId = req.params.id;
+  try {
+    const booking = await Booking.findOne({
+      where: {
+        booking_id: bookingId,
+        status: { [Op.ne]: 'confirmed' }
+      }
+    });
+
+    if (!booking) {
+      return res.status(400).json({
+        success: false,
+        message: 'Бронь не найдена или уже подтверждена'
+      })
+    }
+
+    booking.status = 'confirmed';
+    await booking.save();
+    res.json({ message: 'Бронь успешно подтверждена' });
+  }
+  catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Ошибка сервера' });
+  }
 };

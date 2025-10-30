@@ -5,5 +5,6 @@ const router = express.Router();
 // router.get('/halls', getAllHalls);
 router.get('/halls', getAllHalls1); 
 //router.get('/halls/:id', getHallDetails);
+
     
 export default router;              

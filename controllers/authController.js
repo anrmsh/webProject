@@ -2,6 +2,8 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { User } from "../models/User.js";
 import { Client } from "../models/Client.js";
+import { BanquetHall } from "../models/BanquetHall.js";
+import { Booking } from "../models/Booking.js";
 
 export const registerUser = async (req, res) => {
     try {
@@ -87,3 +89,52 @@ export const logoutUser = (req, res) => {
     res.clearCookie("token");
     res.redirect("/login");
 };
+
+export const getProfile = async (req, res) => {
+    if (!req.user) {
+        return res.redirect('/login');
+    }
+
+    try {
+        const user = await User.findByPk(req.user.user_id, {
+            include: [
+                {
+                    model: Client, as: 'client',
+                    include: [
+                        {
+                            model: Booking, as: 'bookings',
+                            include: {
+                                model: BanquetHall,
+                                as: 'banquetHall'
+                            }
+                        }
+                    ]
+                }
+            ]
+        });
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'Пользователь не найден'
+            })
+        }
+
+        const client = user.client || null;
+        const bookings = client?.bookings || [];
+        const notifications = [];
+
+        res.render('profile', {
+            user,
+            client,
+            bookings,
+            notifications
+        });
+    } catch (err) {
+        console.error('Ошибка при загрузке страницы профиля:', err);
+        res.status(500).json({
+            status: false,
+            message: 'Ошибка сервера при загрузке страницы профиля' + err
+        })
+    }
+}

@@ -8,24 +8,24 @@ export const getAllHalls = async (req, res) => {
     halls
   });
 }
- 
+
 export const getAllHalls1 = async (req, res) => {
-  try {  
+  try {
     const { date } = req.query;
     const where = { status: 'approved' };
-  
+
     if (date) {
       const bookings = await Booking.findAll({
         where: { date, status: { [Op.not]: 'cancelled' } },
-        attributes: ['hall_id'] 
-      }); 
-                             
+        attributes: ['hall_id']
+      });
+
       const excludeHallIds = bookings.map(b => b.hall_id);
       if (excludeHallIds.length > 0) {
         where.hall_id = { [Op.notIn]: excludeHallIds };
       }
-        
-    } 
+
+    }
     const halls = await BanquetHall.findAll({ where });
     res.render('halls', { halls });
   } catch (err) {
@@ -85,4 +85,7 @@ export const showHalls = async (req, res) => {
 export const getHallDetails = async (req, res) => {
   const hall = await BanquetHall.findByPk(req.params.id);
   res.render('booking', { hall });
-};   
+};
+
+
+
