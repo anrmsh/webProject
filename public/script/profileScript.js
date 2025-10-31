@@ -1,15 +1,88 @@
-const today = new Date();
-
-const bookingBoxes = document.querySelectorAll('.booking-box');
-bookingBoxes.forEach(box => {
-    const bookingDate = new Date(box.dataset.date);
-    box.dataset.past = bookingDate < today ? 'true' : 'false';
-});
-
-
-
 
 document.addEventListener('DOMContentLoaded', () => {
+
+    console.log('✅ profileScript.js успешно загружен');
+
+    const today = new Date();
+
+    const bookingBoxes = document.querySelectorAll('.booking-box');
+    bookingBoxes.forEach(box => {
+        const bookingDate = new Date(box.dataset.date);
+        //box.dataset.past = bookingDate < today ? 'true' : 'false';
+
+        const statusEl = box.querySelector('.status-text');
+        if (!statusEl) {
+            console.warn('⚠️ Не найден .status-text внутри .booking-box:', box);
+            return; // пропускаем этот элемент
+        }
+        const statusColors = {
+            pending: 'gray',
+            confirmed: 'green',
+            cancelled: 'red',
+            waiting_list: 'orange',
+            waiting_confirmation: 'orange',
+            past: 'black'
+        };
+        let status = box.dataset.status;
+
+        if (bookingDate < today) {
+            status = 'past';
+            box.dataset.status = status;
+            box.dataset.past = 'true';
+
+            if (statusEl) {
+                statusEl.textContent = 'Прошло';
+                statusEl.style.color = statusColors[status];
+            }
+
+            box.querySelectorAll('.confirm-btn, .cancel-btn, .edit-btn, p').forEach(el => {
+            // удаляем кнопки и текст, если они не нужны
+            if (el.tagName === 'P' && el.textContent.includes('Редактирование недоступно')) {
+                el.remove();
+            } else if (el.classList.contains('confirm-btn') || el.classList.contains('cancel-btn') || el.classList.contains('edit-btn')) {
+                el.remove();
+            }
+        });
+
+            // const confirmBtn = box.querySelector('.confirm-btn');
+            // const cancelBtn = box.querySelector('.cancel-btn');
+            // if (confirmBtn) confirmBtn.remove();
+            // if (cancelBtn) cancelBtn.remove();
+
+        } else if (status === 'cancelled' && bookingDate >= today) {
+            box.dataset.past = 'false';
+            statusEl.style.color = statusColors[status];
+
+            // const confirmBtn = box.querySelector('.confirm-btn');
+            // const editBtn = box.querySelector('.edit-btn');
+            // if (confirmBtn) confirmBtn.remove();
+            // if (editBtn) editBtn.remove();
+
+            box.querySelectorAll('.confirm-btn, .cancel-btn, .edit-btn, p').forEach(el => {
+            if (el.tagName === 'P' && el.textContent.includes('Редактирование недоступно')) {
+                el.remove();
+            } else if (el.classList.contains('confirm-btn') || el.classList.contains('cancel-btn') || el.classList.contains('edit-btn')) {
+                el.remove();
+            }
+        });
+
+        }
+        else {
+            box.dataset.past = 'false';
+
+            // Если элемент имеет статус, устанавливаем соответствующий цвет
+            if (statusEl && statusColors[status]) {
+                statusEl.style.color = statusColors[status];
+            }
+        }
+
+    });
+
+
+
+
+
+
     // Функция подтверждения брони
     async function confirmBooking(bookingId, button) {
         try {
@@ -48,19 +121,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     attachConfirmButtons();
 
-    //  Фильтр бронирований 
-    function filterBookings(status) {
-        const allBoxes = document.querySelectorAll('.booking-box');
 
+    // ================ Фильтр бронирований  новый
+    function filterBookings(filter) {
+        const allBoxes = document.querySelectorAll('.booking-box');
+        const today = new Date();
 
         allBoxes.forEach(box => {
-            const boxStatus = box.dataset.status; // status: pending, confirmed, cancelled, waiting_list, waiting_confirmation
-            const isPast = box.dataset.past === 'true';
-            if (status === 'all' || boxStatus === status || isPast) {
-                box.style.display = 'block';
+            const boxStatus = box.dataset.status;
+            const bookingDate = new Date(box.dataset.date);
+            const isPast = bookingDate < today;
+
+            let show = false;
+
+            if (filter === 'all') {
+                show = true;
+            } else if (filter === 'pastBookings') {
+                show = isPast;
             } else {
-                box.style.display = 'none';
+                show = boxStatus === filter
             }
+
+            box.style.display = show ? 'block' : 'none';
         });
     }
 
@@ -76,11 +158,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     //write some function of rating
-    const today = new Date();
 
-    const bookingBoxes = document.querySelectorAll('.booking-box');
+
+    // const bookingBoxes = document.querySelectorAll('.booking-box');
     bookingBoxes.forEach(box => {
         const bookingDate = new Date(box.dataset.date);
+
 
         if (bookingDate < today) {
             const content = box.querySelector('.content');
@@ -118,15 +201,6 @@ document.addEventListener('DOMContentLoaded', () => {
             content.appendChild(modal);
 
 
-
-
-
-            //прошлая 
-            // rateBtn.addEventListener('click', () => {
-            //     ratingBox.style.display = ratingBox.style.display === 'none' ? 'flex' : 'none';
-            // });
-            //прошлая 
-
             rateBtn.addEventListener('click', () => {
                 if (rateBtn.textContent === 'Оставить оценку') {
                     ratingBox.style.display = 'flex';
@@ -156,42 +230,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         }
     })
-
-    // async function handleStarClick(star, box) {
-    //     const value = parseInt(star.dataset.value);
-    //     const stars = box.querySelectorAll('.star');
-    //     const rateBtn = box.querySelector('.rate-btn');
-
-    //     stars.forEach(s => {
-    //         s.style.color = s.dataset.value < value ? 'gold' : 'gray';
-    //     });
-
-    //     const bookingId = box.dataset.id;
-    //     const hallId = box.dataset.hallId;
-
-    //     try {
-    //         const res = await fetch('/rate-hall', {
-    //             method: 'POST',
-    //             headers: { 'Content-Type': 'application/json' },
-    //             body: JSON.stringify({ bookingId, hallId, score: value })
-    //         });
-
-    //         const data = await res.json();
-    //         if (res.ok) {
-    //             if (rateBtn) {
-    //                 rateBtn.textContent = 'Изменить оценку';
-    //             }
-    //             alert(`Спасибо за отзыв! Средняя оценка зала: ${data.avgRating.toFixed(1)}`)
-    //         } else {
-    //             alert(data.message);
-    //         }
-    //     } catch (err) {
-    //         console.error(err);
-    //         alert('Ошибка сервера');
-    //     }
-    // }
-
-
 
     async function handleStarClick(star, box, rateBtn, ratingBox) {
         const value = parseInt(star.dataset.value);
@@ -232,25 +270,75 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-
-
-    // document.querySelectorAll('.booking-box').forEach(box => {
-    //     const stars = box.querySelectorAll('.star');
-    //     stars.forEach(star => {
-    //         star.addEventListener('click', () => handleStarClick(star, box))
-    //     });
-    // });
-
-
     document.querySelectorAll('.booking-box').forEach(box => {
         const rateBtn = box.querySelector('.rate-btn');
         const ratingBox = box.querySelector('.rating-box');
+
+        if (!rateBtn || !ratingBox) return;
 
         const stars = ratingBox.querySelectorAll('.star');
         stars.forEach(star => {
             star.addEventListener('click', () => handleStarClick(star, box, rateBtn, ratingBox));
         });
     });
+
+    // Делегирование клика на кнопки отмены брони
+    document.addEventListener('click', async (e) => {
+        const button = e.target;
+        if (button.classList.contains('cancel-btn') && button.dataset.id) {
+            const bookingId = button.dataset.id;
+            console.log('Кнопка отмены нажата! ID:', bookingId);
+            if (!confirm('Вы уверены, что хотите отменить бронь?')) return;
+
+            try {
+                const res = await fetch(`/cancel-booking/${bookingId}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    alert(data.message);
+                    const statusEl = button.closest('.content').querySelector('.status-text');
+                    if (statusEl) {
+                        statusEl.textContent = 'Отменено';
+                        statusEl.style.color = 'red';
+                    }
+
+                    const confirmBtn = button.closest('.content').querySelector('.confirm-btn');
+                    if (confirmBtn) confirmBtn.remove();
+                    button.remove();
+                } else {
+                    alert(data.message);
+                    location.reload();
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Ошибка при отмене брони');
+            }
+        }
+    });
+
+
+
+    // ======================= АВТОМАТИЧЕСКАЯ ОТМЕНА =======================
+
+    async function autoCancelPastBookings() {
+        try {
+            const res = await fetch('/auto-cancel-bookings', {
+                method: 'PATCH'
+            });
+
+            const data = await res.json();
+            console.log(data.message);
+        } catch (err) {
+            console.error('Ошибка автоотмены:', err);
+        }
+    }
+
+    autoCancelPastBookings();
+
 
 
 

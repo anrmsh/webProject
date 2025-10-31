@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Редактрование брони</title>
+
+    <link rel="stylesheet" href="/css/editBooking.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  </head>
+  <body>
+    <div class="modal" id="bookingModal">
+      <div class="modal-content">
+        <h3>Редактирование брони</h3>
+        <form
+          id="bookingForm"
+          method="POST"
+          action="/edit-booking/<%= booking.booking_id %>"
+        >
+          <input type="hidden" name="hall_id" value="<%= booking.hall_id %>" />
+
+          <label>Дата</label>
+          <!-- <input
+            type="text"
+            id="datePicker"
+            name="date"
+            value="<%= booking.date %>"
+            required
+          /> -->
+          <input
+            type="date"
+            id="datePicker"
+            name="date"
+            value="<%= booking.date %>"
+            required
+          />
+
+          <label>Время начала</label>
+          <select id="startTime" name="start_time" required></select>
+
+          <label>Время окончания</label>
+          <select id="endTime" name="end_time" required></select>
+
+          <label>Количество гостей</label>
+          <input
+            type="number"
+            name="guest_count"
+            min="1"
+            max="<%= hall.capacity %>"
+            value="<%= booking.guest_count %>"
+            required
+          />
+
+          <label>Выберите дополнительные услуги</label>
+          <div id="servicesList">
+            <% services.forEach(service => { %>
+            <div class="service-item">
+              <input type="checkbox" class="service-checkbox" data-price="<%=
+              service.price %>" name="services" value="<%= service.service_id
+              %>" <% if (booking.services && booking.services.some(s =>
+              s.service_id === service.service_id)) { %> checked <% } %> />
+              <span
+                ><%= service.service_name %> (+<%= service.price %> BYN)</span
+              >
+            </div>
+            <% }) %>
+          </div>
+
+          <h4 class="total-text">
+            Общая стоимость:
+            <span id="totalPrice"><%= booking.payment_amount %></span> BYN
+          </h4>
+
+          <button type="submit" class="btn">Сохранить изменения</button>
+          <input type="hidden" id="hallPrice" value="<%= hall.price %>" />
+
+        </form>
+      </div>
+    </div>
+
+    <script>
+          // Передаем данные с сервера
+          window.hallBookings = <%- JSON.stringify(hallBookings) %>;
+          window.currentBooking = <%- JSON.stringify(booking) %>;
+
+            const disabledDates = hallBookings.map(b => b.date);
+
+      flatpickr("#datePicker", {
+        dateFormat: "Y-m-d",
+        defaultDate: booking.date.split('T')[0],
+        disable: disabledDates, // заблокированные даты
+        minDate: "today" // нельзя выбрать прошлое
+      });
+    </script>
+
+    <script src="/script/bookingEditScript.js"></script>
+  </body>
+</html>

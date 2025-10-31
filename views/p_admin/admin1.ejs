@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Панель администратора</title>
+    <link rel="stylesheet" href="/css/admin.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <!-- ======== HEADER ======== -->
+    <header>
+      <input type="checkbox" id="toggler" />
+      <label for="toggler" class="fas fa-bars"></label>
+      <a href="/" class="logo">BanquetBook<span>.</span></a>
+
+      <nav class="navbar">
+        <a href="#users">Пользователи</a>
+        <a href="#ratings">Рейтинг залов</a>
+        <a href="#calendar">Календарь событий</a>
+        <a href="#stats">Статистика</a>
+      </nav>
+
+      <div class="icons">
+        <a href="/notifications" class="fas fa-bell" title="Уведомления">
+          <% if (notifications && notifications > 0) { %>
+          <span class="notif-count"><%= notifications %></span>
+          <% } %>
+        </a>
+        <a href="/logout" class="fas fa-right-from-bracket" title="Выйти"></a>
+      </div>
+    </header>
+
+    <!-- ======== MAIN CONTENT ======== -->
+    <main>
+      <h2 class="heading">Панель администратора</h2>
+
+      <!-- ======== USERS MANAGEMENT ======== -->
+      <section id="users" class="admin-section">
+        <h3 class="section-title">Управление пользователями</h3>
+        <div class="user-actions">
+          <button class="btn" id="add-manager">Добавить менеджера</button>
+        </div>
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>Имя</th>
+              <th>Фамилия</th>
+              <th>Роль</th>
+              <th>Статус</th>
+              <th>Действия</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% users.forEach(u => { %>
+            <tr>
+              <td><%= u.first_name %></td>
+              <td><%= u.last_name %></td>
+              <td><%= u.roleName %></td>
+              <td>
+                <select class="status-select" data-id="<%= u.user_id %>">
+                  <option value="active" <%= u.access ? 'selected' : '' %>>
+                    Активный
+                  </option>
+                  <option value="blocked" <%= !u.access ? 'selected' : '' %>>
+                    Заблокирован
+                  </option>
+                </select>
+              </td>
+              <td>
+                <button class="btn save-user" data-id="<%= u.user_id %>">
+                  Сохранить
+                </button>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ======== BANQUET HALL RATINGS ======== -->
+      <section id="ratings" class="admin-section">
+        <h3 class="section-title">Рейтинг банкетных залов</h3>
+        <table class="ratings-table">
+          <thead>
+            <tr>
+              <th>Зал</th>
+              <th>Рейтинг</th>
+              <th>Количество заказов</th>
+              <th>Сумма заказов</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% halls.forEach(h => { %>
+            <tr>
+              <td><%= h.hall_name %></td>
+              <td><%= h.rating %></td>
+              <td><%= h.bookingCount %></td>
+              <td><%= h.totalAmount %> ₽</td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ======== EVENTS CALENDAR ======== -->
+      <section id="calendar" class="admin-section">
+        <h3 class="section-title">Календарь событий</h3>
+        <input type="date" id="calendarDate" />
+        <div id="calendarInfo">
+          <% if (calendar && calendar.length > 0) { %>
+          <% calendar.forEach(c => { %>
+          <p>
+            <strong><%= c.hall_name %></strong> — бронирований: <%= c.count %>
+          </p>
+          <% }) %>
+          <% } else { %>
+          <p>Выберите дату, чтобы увидеть события</p>
+          <% } %>
+        </div>
+      </section>
+
+      <!-- ======== STATISTICS / DASHBOARD ======== -->
+      <section id="stats" class="admin-section">
+        <h3 class="section-title">Статистика и Дашборд</h3>
+        <div class="dashboard-cards">
+          <div class="card">
+            <h4>Всего бронирований</h4>
+            <p><%= dashboard.totalBookings %></p>
+          </div>
+          <div class="card">
+            <h4>Сумма бронирований</h4>
+            <p><%= dashboard.totalAmount %> ₽</p>
+          </div>
+          <div class="card">
+            <h4>Зал с наибольшей суммой</h4>
+            <p><%= dashboard.topHall %></p>
+          </div>
+        </div>
+        <canvas id="statsChart"></canvas>
+      </section>
+    </main>
+
+    <script src="/script/adminScript.js"></script>
+  </body>
+</html>

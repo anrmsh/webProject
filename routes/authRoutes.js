@@ -15,16 +15,15 @@ router.post("/login", loginUser);
 
 
 
-router.get('/admin', authMiddleware, (req, res) => {
-    res.render('p_admin/admin');
-});
+// router.get('/admin', authMiddleware, (req, res) => {
+//     res.render('p_admin/admin');
+// });  
 
 router.get('/manager', authMiddleware, (req, res) => {
     res.render('p_manager/manager');
 })
 
-
-
+   
 router.get('/logout', logoutUser);
 
 export default router;    

@@ -11,7 +11,7 @@ export const getHallDetails = async (req, res) => {
     const bookings = await Booking.findAll({
         where: { hall_id: hallId, status: { [Op.not]: 'cancelled' } }, attributes: ['date']
     });
-  
+
     const disabledDates = bookings.map(b => b.date);
 
     const recommendations = await BanquetHall.findAll({
@@ -136,28 +136,218 @@ export const addToWaitingList = async (req, res) => {
 
 
 export const updateStatusBookingConfirm = async (req, res) => {
-  const bookingId = req.params.id;
-  try {
-    const booking = await Booking.findOne({
-      where: {
-        booking_id: bookingId,
-        status: { [Op.ne]: 'confirmed' }
-      }
+    const bookingId = req.params.id;
+    try {
+        const booking = await Booking.findOne({
+            where: {
+                booking_id: bookingId,
+                status: { [Op.ne]: 'confirmed' }
+            }
+        });
+
+        if (!booking) {
+            return res.status(400).json({
+                success: false,
+                message: 'Бронь не найдена или уже подтверждена'
+            })
+        }
+
+        booking.status = 'confirmed';
+        await booking.save();
+        res.json({ message: 'Бронь успешно подтверждена' });
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Ошибка сервера' });
+    }
+};
+
+export async function cancelBooking(req, res) {
+    try {
+        const bookingId = req.params.id;
+
+        const booking = await Booking.findByPk(bookingId);
+        if (!booking) {
+            return res.status(404).json({ message: 'Бронь не найдена' });
+        }
+
+        booking.status = 'cancelled';
+        await booking.save();
+
+        res.json({ message: 'Бронь успешно отменена' });
+    } catch (err) {
+        console.error('Ошибка при отмене:', err);
+        res.status(500).json({ message: 'Ошибка сервера при отмене' });
+    }
+}
+
+// ✅ Автоматическая отмена за 1 день до мероприятия
+export async function autoCancelBookings(req, res) {
+    try {
+        // Найдём все неподтверждённые брони, у которых дата сегодня или завтра
+        const [affectedCount] = await Booking.update(
+            { status: 'cancelled' },
+            {
+                where: {
+                    status: 'pending',
+                    date: {
+                        [Op.lte]: new Date(new Date().setDate(new Date().getDate() + 1)) // сегодня или завтра
+                    }
+                }
+            }
+        );
+
+        res.json({
+            message: 'Автоматическая отмена выполнена',
+            affected: affectedCount
+        });
+    } catch (err) {
+        console.error('Ошибка при автоотмене:', err);
+        res.status(500).json({ message: 'Ошибка при автоматической отмене' });
+    }
+}
+
+
+//EDITING BOOKING
+export const getBookingDetails = async (req, res) => {
+    const bookingId = req.params.id;
+
+    const booking = await Booking.findByPk(bookingId, {
+        include: [
+            { model: BanquetHall },
+            { model: Client },
+            { model: Service }
+        ]
     });
 
     if (!booking) {
-      return res.status(400).json({
-        success: false,
-        message: 'Бронь не найдена или уже подтверждена'
-      })
+        return res.render('message', {
+            title: 'Ошибка',
+            message: 'Бронь не найдена',
+            link: '/profile'
+        });
     }
 
-    booking.status = 'confirmed';
-    await booking.save();
-    res.json({ message: 'Бронь успешно подтверждена' });
-  }
-  catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Ошибка сервера' });
-  }
+    const hall = await BanquetHall.findByPk(booking.hall_id);
+
+    const hallBookings = await Booking.findAll({
+        where: {
+            hall_id: booking.hall_id,
+            status: { [Op.ne]: 'cancelled' },
+            booking_id: { [Op.ne]: booking.booking_id }
+        },
+        attributes: ['date', 'start_time', 'end_time']
+    });
+
+    const services = await Service.findAll();
+    res.render('booking/bookingEdit', {
+        booking,
+        hall,
+        hallBookings,
+        services
+    });
+}
+
+export const updateBooking = async (req, res) => {
+    try {
+        const bookingId = req.params.id;
+        const { date, start_time, end_time, guest_count, services } = req.body;
+
+        const booking = await Booking.findByPk(bookingId,
+            { include: [{ model: BanquetHall }] }
+        );
+
+        if (!booking) {
+            return res.render('message', {
+                title: 'Ошибка',
+                message: 'Бронь не найдена',
+                link: '/profile'
+            });
+        }
+
+        const conflict = await Booking.findOne({
+            where: {
+                hall_id: booking.hall_id,
+                date,
+                booking_id: { [Op.ne]: booking.booking_id },
+                [Op.or]: [
+                    { start_time: { [Op.between]: [start_time, end_time] } },
+                    { end_time: { [Op.between]: [start_time, end_time] } },
+                    {
+                        [Op.and]: [
+                            { start_time: { [Op.lte]: start_time } },
+                            { end_time: { [Op.gte]: end_time } }
+                        ]
+                    }
+                ]
+            }
+        });
+
+        if (conflict) {
+            return res.render('message', {
+                title: 'Ошибка',
+                message: 'Выбранный слот уже занят',
+                link: '/profile'
+            });
+        }
+
+        // booking.date = date;
+        booking.date = date;
+        booking.start_time = start_time;
+        booking.end_time = end_time;
+        booking.guest_count = guest_count;
+
+        // Рассчёт суммы с учётом услуг
+        let total = parseFloat(booking.banquetHall.price);
+        if (Array.isArray(services)) {
+            const selectedServices = services
+                ? await Service.findAll({ where: { service_id: services } })
+                : [];
+            total += selectedServices.reduce((sum, s) => sum + parseFloat(s.price), 0);
+
+        }
+        console.log(total);
+        booking.payment_amount = total;
+
+        await booking.save();
+
+        res.render('message', {
+            title: 'Успех',
+            message: 'Бронь успешно обновлена!',
+            link: '/profile'
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.render('message', {
+            title: 'Ошибка',
+            message: 'Произошла ошибка при обновлении брони',
+            link: '/profile'
+        });
+    }
+}
+
+export const getHallBookingsByDate = async (req, res) => {
+    try {
+        const { hall_id, date, booking_id } = req.query;
+
+        const hallBookings = await Booking.findAll({
+            where: {
+                hall_id,
+                date,
+                status: { [Op.ne]: 'cancelled' },
+                booking_id: { [Op.ne]: booking_id }
+            },
+            attributes: ['date', 'start_time', 'end_time']
+        });
+
+        res.json(hallBookings);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Ошибка загрузки бронирований' });
+    }
 };
+
+
+
+

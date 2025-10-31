@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Рейтинг банкетных залов</title>
+  <link rel="stylesheet" href="/css/admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <header>
+    <a href="/admin" class="back-btn"><i class="fas fa-arrow-left"></i> Назад</a>
+    <h1>Рейтинг банкетных залов</h1>
+  </header>
+
+  <main>
+    <table>
+      <thead>
+        <tr>
+          <th>Зал</th>
+          <th>Рейтинг</th>
+          <th>Бронирований</th>
+          <th>Сумма заказов</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% halls.forEach(h => { %>
+        <tr>
+          <td><%= h.hall_name %></td>
+          <td><%= h.rating %></td>
+          <td><%= h.bookingCount %></td>
+          <td><%= h.totalAmount %> ₽</td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </main>
+</body>
+</html>

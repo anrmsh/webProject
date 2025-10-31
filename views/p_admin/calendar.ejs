@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Календарь событий</title>
+  <link rel="stylesheet" href="/css/admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <header>
+    <a href="/admin" class="back-btn"><i class="fas fa-arrow-left"></i> Назад</a>
+    <h1>Календарь событий</h1>
+  </header>
+
+  <main>
+    <input type="date" id="calendarDate">
+    <div id="calendarInfo">
+      <% if (calendar && calendar.length > 0) { %>
+        <% calendar.forEach(c => { %>
+          <p><strong><%= c.hall_name %></strong> — бронирований: <%= c.count %></p>
+        <% }) %>
+      <% } else { %>
+        <p>Выберите дату, чтобы увидеть события</p>
+      <% } %>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Управление пользователями</title>
+  <link rel="stylesheet" href="/css/admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <header>
+    <a href="/admin" class="back-btn"><i class="fas fa-arrow-left"></i> Назад</a>
+    <h1>Управление пользователями</h1>
+  </header>
+
+  <main>
+    <table>
+      <thead>
+        <tr>
+          <th>Имя</th>
+          <th>Фамилия</th>
+          <th>Роль</th>
+          <th>Статус</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% users.forEach(u => { %>
+        <tr>
+          <td><%= u.first_name %></td>
+          <td><%= u.last_name %></td>
+          <td><%= u.role %></td>
+          <td><%= u.status %></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </main>
+</body>
+</html>

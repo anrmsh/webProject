@@ -37,6 +37,7 @@
 
     <!-- ======== MAIN CONTENT ======== -->
     <main>
+      
       <h2 class="heading">Профиль пользователя</h2>
 
       <% if (user) { %>
@@ -97,7 +98,7 @@
           <button class="filter-btn" data-filter="waiting_confirmation">
             <span>Ждут подтверждения</span>
           </button>
-          <button class="filter-btn" data-filter="past">
+          <button class="filter-btn" data-filter="pastBookings">
             <span>Прошедшие</span>
           </button>
         </div>
@@ -106,27 +107,30 @@
           <% if (bookings && bookings.length > 0) { %>
           <%bookings.forEach(function(b) { 
             let statusText = ''; 
-            let statusColor  = ''; 
+            let statusColor = ''; 
             if (b.status === 'pending') { 
-              statusText ='Ожидает подтверждения'; 
-              statusColor = 'gray'; 
-            } else if (b.status === 'confirmed') { 
-              statusText = 'Подтверждено'; 
-              statusColor = 'green'; }
-            else if (b.status === 'cancelled') { 
+              statusText ='Ожидает подтверждения';
+               statusColor = 'gray'; 
+              } else if (b.status === 'confirmed') { 
+                statusText = 'Подтверждено'; 
+                statusColor = 'green'; }
+          else if (b.status === 'cancelled') { 
             statusText = 'Отменено';
-            statusColor = 'red'; 
-            } else if (b.status === 'waiting_list') {
-            statusText = 'Лист ожидания'; 
-            statusColor = 'gray'; } else if
-            (b.status === 'waiting_confirmation') { 
+          statusColor = 'red'; } 
+          else if (b.status === 'waiting_list') {
+          statusText = 'Лист ожидания'; 
+          statusColor = 'gray'; } else if
+          (b.status === 'waiting_confirmation') { 
             statusText = 'Ждут подтверждения'; statusColor = 'orange'; } %>
 
-          <div class="box booking-box"        data-status="<%= b.status %>"
+          <div
+            class="box booking-box"
+            data-status="<%= b.status %>"
             data-date="<%= b.date %>"
             data-id="<%= b.booking_id %>"
             data-last-rating="<%= b.userRating || 0 %>"
-            data-hall-id="<%= b.banquetHall ? b.banquetHall.hall_id : '' %>">
+            data-hall-id="<%= b.banquetHall ? b.banquetHall.hall_id : '' %>"
+          >
             <div class="image">
               <% if (b.banquetHall && b.banquetHall.image_path) { %>
               <img
@@ -168,6 +172,11 @@
 
               <% } else { %>
               <p>Редактирование недоступно (менее 7 дней)</p>
+              <% } %> <% if (b.status !== 'confirmed' && b.status !==
+              'cancelled') { %>
+              <button class="cancel-btn" data-id="<%= b.booking_id %>">
+                Отменить бронь
+              </button>
               <% } %>
             </div>
           </div>

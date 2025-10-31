@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Статистика и дашборд</title>
+  <link rel="stylesheet" href="/css/admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header>
+    <a href="/admin" class="back-btn"><i class="fas fa-arrow-left"></i> Назад</a>
+    <h1>Статистика и дашборд</h1>
+  </header>
+
+  <main>
+    <div class="dashboard">
+      <div class="card">
+        <h4>Всего бронирований</h4>
+        <p><%= totalBookings %></p>
+      </div>
+      <div class="card">
+        <h4>Сумма бронирований</h4>
+        <p><%= totalRevenue %> ₽</p>
+      </div>
+      <div class="card">
+        <h4>Зал с наибольшей суммой</h4>
+        <p><%= topHall %></p>
+      </div>
+    </div>
+    <canvas id="statsChart"></canvas>
+    <script src="/script/adminScript.js"></script>
+  </main>
+</body>
+</html>

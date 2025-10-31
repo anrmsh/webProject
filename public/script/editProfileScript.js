@@ -42,7 +42,7 @@ confirmYes.addEventListener('click', async () => {
         alert('Ошибка сервера');
     }
 });
-
+ 
 
 // --- Смена пароля ---
 changePasswordBtn.addEventListener("click", () => {

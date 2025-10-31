@@ -96,7 +96,7 @@ export const postEditProfile = async (req, res) => {
 
         const { first_name, last_name, phone, login } = req.body;
 
-        const user = await User.findByPk(res.user.user_id);
+        const user = await User.findByPk(req.user.user_id);
         const client = await Client.findOne({
             where: { user_id: req.user.user_id }
         });
