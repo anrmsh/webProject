@@ -1,0 +1,174 @@
+:root {
+  --pink: #ae3962;
+  --shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+  --header-height: 8rem;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+body {
+  background: #f5f5f5;
+  font-size: 1.6rem;
+}
+
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-height);
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4rem;
+  box-shadow: var(--shadow);
+  z-index: 1000;
+}
+
+header h1 {
+  font-size: 2.4rem;
+  color: #333;
+}
+
+header .back-btn {
+  color: #ae3962;
+  font-size: 1.8rem;
+}
+
+main {
+  margin-top: var(--header-height);
+  padding: 2rem 4rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  box-shadow: var(--shadow);
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+th,
+td {
+  padding: 1.2rem 1rem;
+  text-align: left;
+}
+
+th {
+  /* background: #f0f0f0; */
+  background: var(--pink);
+  color: #fff;
+  cursor: pointer;
+  position: relative;
+  user-select: none;
+}
+
+th,
+td {
+  padding: 1.2rem 1.5rem;
+  text-align: left;
+  font-size: 1.6rem;
+  border-bottom: 1px solid #eee;
+}
+
+tr:hover {
+  background: rgba(174, 57, 98, 0.05);
+  cursor: pointer;
+}
+
+th .sort-arrow {
+  font-size: 1.2rem;
+  margin-left: 0.5rem;
+  color: #ccc;
+}
+
+tr {
+  border-bottom: 1px solid #eee;
+}
+
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 2000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  max-width: 600px;
+  width: 90%;
+  position: relative;
+  box-shadow: var(--shadow);
+}
+
+.close-modal {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 2rem;
+  cursor: pointer;
+  color: #ae3962;
+}
+
+.close-modal:hover {
+  color: #333;
+}
+
+.modal-content h2 {
+  margin-bottom: 1rem;
+  font-size: 2rem;
+  color: #333;
+}
+
+.modal-content p {
+  margin: 0.5rem 0;
+  font-size: 1.6rem;
+  color: #555;
+}
+
+.modal-content img {
+  width: 100%;
+  height: 250px; /* фиксированная высота */
+  object-fit: cover; /* не растягивается, а обрезается по центру */
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.status-select {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.4rem;
+  font-size: 1.5rem;
+}
+
+.save-btn {
+  display: block;
+  margin-top: 1.5rem;
+  background: var(--pink);
+  color: #fff;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 1.6rem;
+}
+
+.save-btn:hover {
+  background: #932d50;
+}

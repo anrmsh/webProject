@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.error('Chart.js не загружен');
     return;
   }
-
+ 
   // Линейный график
   const bookingsCanvas = document.getElementById('bookingsChart');
   if (bookingsCanvas) {

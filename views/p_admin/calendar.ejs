@@ -1,28 +1,54 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <title>Календарь событий</title>
-  <link rel="stylesheet" href="/css/admin.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
-<body>
-  <header>
-    <a href="/admin" class="back-btn"><i class="fas fa-arrow-left"></i> Назад</a>
-    <h1>Календарь событий</h1>
-  </header>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Календарь событий</title>
+    <link rel="stylesheet" href="/css/admin.css" />
+    <link rel="stylesheet" href="/css/p_admin/adminCalendar.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <a href="/admin" class="back-btn"
+        ><i class="fas fa-arrow-left"></i> Назад</a
+      >
+      <h1>Календарь событий</h1>
+    </header>
 
-  <main>
-    <input type="date" id="calendarDate">
-    <div id="calendarInfo">
-      <% if (calendar && calendar.length > 0) { %>
-        <% calendar.forEach(c => { %>
-          <p><strong><%= c.hall_name %></strong> — бронирований: <%= c.count %></p>
-        <% }) %>
-      <% } else { %>
-        <p>Выберите дату, чтобы увидеть события</p>
-      <% } %>
+    <div class="calendar-wrapper">
+      <div class="calendar-controls">
+        <button id="prevMonth">&lt;</button>
+        <span id="currentMonth"></span>
+        <button id="nextMonth">&gt;</button>
+      </div>
+
+      <table id="calendarTable">
+        <thead>
+          <tr>
+            <th>Пн</th>
+            <th>Вт</th>
+            <th>Ср</th>
+            <th>Чт</th>
+            <th>Пт</th>
+            <th>Сб</th>
+            <th>Вс</th>
+          </tr>
+        </thead>
+        <tbody id="calendarBody"></tbody>
+      </table>
     </div>
-  </main>
-</body>
+
+    <div class="modal" id="bookingModal">
+      <div class="modal-content">
+        <span class="modal-close" id="modalClose">&times;</span>
+        <h2 id="modalDate">Бронирования</h2>
+        <div id="modalBookings"></div>
+      </div>
+    </div>
+
+    <script src="/script/p_admin/adminCalendar.js"></script>
+  </body>
 </html>

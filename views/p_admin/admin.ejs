@@ -15,7 +15,7 @@
       <a href="/" class="logo">BanquetBook<span>.</span></a>
       <nav class="navbar">
         <a href="/admin/users">Пользователи</a>
-        <a href="/admin/halls">Рейтинги залов</a>
+        <a href="/admin/halls">Залы</a>
         <a href="/admin/calendar">Календарь событий</a>
         <a href="/admin/stats">Статистика</a>
       </nav>
@@ -55,18 +55,17 @@
         </div>
       </div>
       <section class="charts">
-  <div class="charts-container">
-    <div class="chart-wrapper">
-      <h3>График заказов за последние 7 дней</h3>
-      <canvas id="bookingsChart"></canvas>
-    </div>
-    <div class="chart-wrapper">
-      <h3>Сумма бронирований по залам</h3>
-      <canvas id="hallChart"></canvas>
-    </div>
-  </div>
-</section>
-
+        <div class="charts-container">
+          <div class="chart-wrapper">
+            <h3>График заказов за последние 7 дней</h3>
+            <canvas id="bookingsChart"></canvas>
+          </div>
+          <div class="chart-wrapper">
+            <h3>Сумма бронирований по залам</h3>
+            <canvas id="hallChart"></canvas>
+          </div>
+        </div>
+      </section>
     </main>
 
     <script>

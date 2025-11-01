@@ -1,38 +1,91 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <title>Управление пользователями</title>
-  <link rel="stylesheet" href="/css/admin.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
-<body>
-  <header>
-    <a href="/admin" class="back-btn"><i class="fas fa-arrow-left"></i> Назад</a>
-    <h1>Управление пользователями</h1>
-  </header>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Управление пользователями</title>
+    <link rel="stylesheet" href="/css/admin.css" />
+    <link rel="stylesheet" href="/css/p_admin/adminUsers.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <a href="/admin" class="back-btn"
+        ><i class="fas fa-arrow-left"></i> Назад</a
+      >
+      <h1>Управление пользователями</h1>
+    </header>
 
-  <main>
-    <table>
-      <thead>
-        <tr>
-          <th>Имя</th>
-          <th>Фамилия</th>
-          <th>Роль</th>
-          <th>Статус</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% users.forEach(u => { %>
-        <tr>
-          <td><%= u.first_name %></td>
-          <td><%= u.last_name %></td>
-          <td><%= u.role %></td>
-          <td><%= u.status %></td>
-        </tr>
-        <% }) %>
-      </tbody>
-    </table>
-  </main>
-</body>
+   <main>
+      <table id="userTable">
+        <thead>
+          <tr>
+            <th>Имя</th>
+            <th>Фамилия</th>
+            <th>Роль</th>
+            <th>Статус</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% users.forEach(u => { %>
+          <tr data-user='<%= JSON.stringify(u).replace(/'/g, "&#39;") %>'>
+            <td><%= u.first_name %></td>
+            <td><%= u.last_name %></td>
+            <td><%= u.role %></td>
+            <td class="status-cell"><%= u.status %></td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+
+      <button class="add-manager-btn" id="openModalBtn">
+        <i class="fas fa-user-plus"></i> Зарегистрировать менеджера
+      </button>
+
+      <!-- Модальное окно создания менеджера -->
+      <div class="modal" id="managerModal">
+        <div class="modal-content">
+          <span class="close-modal" id="closeModal">&times;</span>
+          <h2>Регистрация менеджера</h2>
+          <form id="managerForm">
+            <input type="text" name="first_name" placeholder="Имя" required />
+            <input type="text" name="last_name" placeholder="Фамилия" required />
+            <input type="text" name="login" placeholder="Логин" required />
+            <input type="password" name="password" placeholder="Пароль" required required minlength="6"/>
+            <button type="submit">Создать</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Карточка пользователя -->
+      <div id="userCard" class="user-card">
+        <div class="card-content">
+          <span class="close-card" id="closeCard">&times;</span>
+          <h3>Информация о пользователе</h3>
+          <p><strong>Имя:</strong> <span id="cardName"></span></p>
+          <p><strong>Фамилия:</strong> <span id="cardLast"></span></p>
+          <p><strong>Логин:</strong> <span id="cardLogin"></span></p>
+          <p><strong>Роль:</strong> <span id="cardRole"></span></p>
+          <p>
+            <strong>Статус:</strong>
+            <select id="statusSelect">
+              <option value="active">Активен</option>
+              <option value="blocked">Заблокирован</option>
+            </select>
+          </p>
+          <div class="buttons">
+            <button id="saveChangesBtn" class="save-btn">
+              <i class="fas fa-save"></i> Сохранить
+            </button>
+            <button id="deleteUserBtn" class="delete-btn">
+              <i class="fas fa-trash"></i> Удалить
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script src="/script/adminUsers.js"></script>
+  </body>
 </html>

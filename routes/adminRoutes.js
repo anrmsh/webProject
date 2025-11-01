@@ -4,24 +4,51 @@ import {
     getAdminUsers,
     getAdminHalls,
     getAdminCalendar,
-    getAdminStats
+    getAdminStats,
+    createManager,
+    deleteUser, 
+    updateUserStatus,
+    getHallById,
+    updateHallStatus,
+    getBookingsByDate,
+    getMonthlyBookings,
+    getDashboardData,  
+    exportDashboard   
 } from '../controllers/adminController.js';
+import { authMiddleware } from "../middleware/middleware.js";
 
-const router = express.Router();
+const router = express.Router();  
 
 // Дашборд
 router.get('/admin', getAdminDashboard);
 
 // Пользователи
-router.get('/admin/users', getAdminUsers);
+router.get('/admin/users', authMiddleware, getAdminUsers);
 
 // Залы
 router.get('/admin/halls', getAdminHalls);
 
-// Календарь
+// Календарь 
 router.get('/admin/calendar', getAdminCalendar);
 
 // Статистика
 router.get('/admin/stats', getAdminStats);
+router.post('/admin/users/registerManager', createManager);
 
-export default router;
+router.delete("/admin/users/:id", deleteUser);
+router.patch("/admin/users/:id/status", updateUserStatus);
+
+
+
+router.get('/admin/halls/:id',getHallById); 
+router.put('/admin/halls/:hallId/status', updateHallStatus);
+
+router.get('/admin/calendar/:date', getBookingsByDate);
+router.get('/admin/calendar/:year/:month', getMonthlyBookings);
+
+router.get('/admin/dashboard-data', getDashboardData);
+router.get('/admin/export-dashboard', exportDashboard);
+
+  
+export default router;  
+ 

@@ -1,38 +1,89 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <title>Рейтинг банкетных залов</title>
-  <link rel="stylesheet" href="/css/admin.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
-<body>
-  <header>
-    <a href="/admin" class="back-btn"><i class="fas fa-arrow-left"></i> Назад</a>
-    <h1>Рейтинг банкетных залов</h1>
-  </header>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Рейтинг банкетных залов</title>
+    <link rel="stylesheet" href="/css/admin.css" />
+    <link rel="stylesheet" href="/css/p_admin/adminHalls.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <a href="/admin" class="back-btn"
+        ><i class="fas fa-arrow-left"></i> Назад</a
+      >
+      <h1>Рейтинг банкетных залов</h1>
+    </header>
 
-  <main>
-    <table>
-      <thead>
-        <tr>
-          <th>Зал</th>
-          <th>Рейтинг</th>
-          <th>Бронирований</th>
-          <th>Сумма заказов</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% halls.forEach(h => { %>
-        <tr>
-          <td><%= h.hall_name %></td>
-          <td><%= h.rating %></td>
-          <td><%= h.bookingCount %></td>
-          <td><%= h.totalAmount %> ₽</td>
-        </tr>
-        <% }) %>
-      </tbody>
-    </table>
-  </main>
-</body>
+    <main>
+      <table id="hallTable">
+        <thead>
+          <tr>
+            <th>Зал <span class="sort-arrow">↑↓</span></th>
+            <th>Рейтинг <span class="sort-arrow">↑↓</span></th>
+            <th>Бронирований <span class="sort-arrow">↑↓</span></th>
+            <th>Сумма заказов <span class="sort-arrow">↑↓</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% halls.forEach(h => { %>
+          <tr
+            data-id="<%= h.hall_id %>"
+            data-capacity="<%= h.capacity %>"
+            data-price="<%= h.price %>"
+            data-description="<%= h.description %>"
+            data-address="<%= h.address %>"
+            data-status="<%= h.status %>"
+            data-manager-full-name="<%= h.manager ? h.manager.first_name + ' ' + h.manager.last_name + ' (' + translateStatus(h.manager.status) + ')' : '—' %>"
+          >
+            <td><%= h.hall_name %></td>
+            <td><%= h.rating %></td>
+            <td><%= h.bookingCount %></td>
+            <td><%= h.totalAmount %> BYN</td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+
+      <!-- Модальное окно -->
+      <!-- Модальное окно -->
+      <div id="hallModal" class="modal">
+        <div class="modal-content">
+          <span class="close-modal">&times;</span>
+          <h2 id="modalHallName"></h2>
+          <img
+            id="modalHallImage"
+            src=""
+            alt="Фото зала"
+            style="width: 100%; border-radius: 0.5rem; margin-bottom: 1rem"
+          />
+          <p><strong>Описание:</strong> <span id="modalHallDesc"></span></p>
+          <p>
+            <strong>Вместимость (человек):</strong>
+            <span id="modalHallCapacity"></span>
+          </p>
+          <p><strong>Цена:</strong> <span id="modalHallPrice"></span> BYN</p>
+          <p><strong>Адрес:</strong> <span id="modalHallAddress"></span></p>
+          <p><strong>Рейтинг:</strong> <span id="modalHallRating"></span></p>
+          <p>
+            <strong>Статус:</strong>
+            <select id="modalHallStatus" class="status-select">
+              <option value="pending">Ожидает подтверждения</option>
+              <option value="approved">Одобрен</option>
+              <option value="inactive">Неактивен</option>
+            </select>
+          </p>
+          <p><strong>Менеджер:</strong> <span id="modalHallManager"></span></p>
+          <button id="saveStatusBtn" class="save-btn">
+            Сохранить изменения
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <script src="/script/p_admin/adminHalls.js"></script>
+  </body>
 </html>

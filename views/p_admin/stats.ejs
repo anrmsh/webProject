@@ -1,35 +1,40 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Статистика и дашборд</title>
-  <link rel="stylesheet" href="/css/admin.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta charset="UTF-8">
+    <title>Админ Дашборд</title>
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="/css/p_admin/stats.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <header>
-    <a href="/admin" class="back-btn"><i class="fas fa-arrow-left"></i> Назад</a>
-    <h1>Статистика и дашборд</h1>
-  </header>
+<header>
+    <h1>Дашборд администратора</h1>
+    <button id="exportBtn">Экспорт в Word</button>
+</header>
 
-  <main>
-    <div class="dashboard">
-      <div class="card">
-        <h4>Всего бронирований</h4>
-        <p><%= totalBookings %></p>
-      </div>
-      <div class="card">
-        <h4>Сумма бронирований</h4>
-        <p><%= totalRevenue %> ₽</p>
-      </div>
-      <div class="card">
-        <h4>Зал с наибольшей суммой</h4>
-        <p><%= topHall %></p>
-      </div>
+<div class="dashboard-wrapper">
+    <div class="chart-container">
+        <h2>Бронирования по месяцам</h2>
+        <canvas id="monthlyBookingsChart"></canvas>
     </div>
-    <canvas id="statsChart"></canvas>
-    <script src="/script/adminScript.js"></script>
-  </main>
+
+    <div class="chart-container">
+        <h2>Статусы бронирований</h2>
+        <canvas id="statusChart"></canvas>
+    </div>
+
+    <div class="chart-container">
+        <h2>Топ-5 залов по бронированиям</h2>
+        <canvas id="topHallsChart"></canvas>
+    </div>
+
+    <div class="chart-container">
+        <h2>Общее количество гостей по месяцам</h2>
+        <canvas id="guestsChart"></canvas>
+    </div>
+</div>
+
+<script src="/script/p_admin/stats.js"></script>
 </body>
 </html>
