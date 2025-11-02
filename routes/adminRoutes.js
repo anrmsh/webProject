@@ -1,6 +1,6 @@
 import express from 'express';
 import {
-    getAdminDashboard,
+    getAdminHonePage,
     getAdminUsers,
     getAdminHalls,
     getAdminCalendar,
@@ -20,7 +20,7 @@ import { authMiddleware } from "../middleware/middleware.js";
 const router = express.Router();
 
 // Дашборд
-router.get('/admin', getAdminDashboard);
+router.get('/admin', getAdminHonePage);
 
 // Пользователи
 router.get('/admin/users', authMiddleware, getAdminUsers);

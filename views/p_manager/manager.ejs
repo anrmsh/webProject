@@ -1,33 +1,113 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Менеджер Панель</title>
-    <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Главная — Панель менеджера</title>
+    <link rel="stylesheet" href="/css/p_manager/manager.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
     <header>
-        <h1>Панель менеджера</h1>
-        <nav>
-            <a href="/logout">Выйти</a>
-        </nav>
+      <a href="/" class="logo">BanquetBook<span>.</span></a>
+      <nav class="navbar">
+        <a href="/manager/waiting-list">Лист ожидания</a>
+        <a href="/manager/schedule">Расписание</a>
+        <a href="/manager/ratings">Оценки</a>
+        <a href="/manager/report">Отчёт</a>
+      </nav>
+      <div class="icons">
+        <a href="/logout" class="fas fa-right-from-bracket" title="Выйти"></a>
+      </div>
     </header>
 
-    <main>
-        <h2>Добро пожаловать, <%= user.first_name %> <%= user.last_name %>!</h2>
+    <main class="manager-home">
+      <section class="welcome">
+        <h2>Добро пожаловать в систему управления BanquetBook.</h2>
+        <p>Дата: <%= currentDate %></p>
+      </section>
 
-        <section>
-            <h3>Управление заказами</h3>
-            <ul>
-                <li><a href="/manager/orders">Список заказов</a></li>
-                <li><a href="/manager/halls">Управление залами</a></li>
-            </ul>
+      <section class="profile-section">
+        <div class="profile-card">
+          <img
+            src="https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png"
+            class="avatar"
+            alt="Manager Avatar"
+          />
+          <div class="profile-info">
+            <h3><%= managerName %></h3>
+            <p>
+              <i class="fa-solid fa-briefcase"></i> Роль: Менеджер банкетных
+              залов
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="hall-select">
+        <% if (halls.length > 0) { %>
+        <label for="hallSelect">Выберите зал:</label>
+        <select id="hallSelect">
+          <% halls.forEach(hall => { %>
+          <option value="<%= hall.hall_id %>"><%= hall.hall_name %></option>
+          <% }) %>
+        </select>
+        <% } else { %>
+        <p class="no-halls-message">
+          У вас пока нет назначенных банкетных залов.
+        </p>
+        <% } %>
+      </section>
+      <div class="box">
+        <section class="dashboard-cards">
+          <div class="card">
+            <i class="fa-solid fa-calendar-check"></i>
+            <h3>Проведённые мероприятия</h3>
+            <p id="bookingsCount">-</p>
+          </div>
+          <div class="card">
+            <i class="fa-solid fa-users"></i>
+            <h3>Количество гостей</h3>
+            <p id="guestsCount">-</p>
+          </div>
+          <div class="card">
+            <i class="fa-solid fa-star"></i>
+            <h3>Средний рейтинг</h3>
+            <p id="averageRating">-</p>
+          </div>
+          <div class="card">
+            <i class="fa-solid fa-coins"></i>
+            <h3>Доход (BYN)</h3>
+            <p id="revenueSum">-</p>
+          </div>
+          <div class="card">
+            <i class="fa-solid fa-book"></i>
+            <h3>Всего бронирований</h3>
+            <p id="totalBookings">-</p>
+          </div>
         </section>
 
-        <section>
-            <h3>Отчеты</h3>
-            <p>Здесь можно будет добавлять отчеты и статистику для менеджера</p>
+        <section class="chart-section">
+          <h3>Аналитика по залу</h3>
+
+          <div class="charts-container">
+            <div class="chart-box">
+              <h4>Статус бронирований</h4>
+              <canvas id="statusChart"></canvas>
+            </div>
+
+            <div class="chart-box">
+              <h4>Динамика бронирований (по месяцам)</h4>
+              <canvas id="hallBookingsChart"></canvas>
+            </div>
+          </div>
         </section>
+      </div>
     </main>
-</body>
+
+    <script src="/script/p_manager/manager.js"></script>
+  </body>
 </html>

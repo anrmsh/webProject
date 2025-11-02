@@ -2,14 +2,12 @@
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
-    <title>Панель администратора</title>
+    <title>Главная — Панель администратора</title>
     <link rel="stylesheet" href="/css/admin.css" />
-  
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
     <header>
@@ -17,63 +15,62 @@
       <nav class="navbar">
         <a href="/admin/users">Пользователи</a>
         <a href="/admin/halls">Залы</a>
-        <a href="/admin/calendar">Календарь событий</a>
-        <a href="/admin/stats">Статистика</a>
+        <a href="/admin/calendar">Календарь</a>
+        <a href="/admin/stats">Отчёты</a>
       </nav>
       <div class="icons">
         <a href="/admin/notifications" class="fas fa-bell" title="Уведомления">
           <% if (notifications && notifications > 0) { %>
-          <span class="notif-count"><%= notifications %></span>
-          <% } %>
+          <span class="notif-count"><%= notifications %></span> <% } %>
         </a>
         <a href="/logout" class="fas fa-right-from-bracket" title="Выйти"></a>
       </div>
     </header>
 
     <main class="admin-home">
-      <h2>Добро пожаловать, <%= adminName %>!</h2>
-      <p>
-        Здесь вы можете управлять пользователями, залами и просматривать
-        статистику.
-      </p>
+      <section class="welcome">
+        <h2>Добро пожаловать в систему управления
+          BanquetBook.</h2>
+        <p>
+          Дата: <%= currentDate %>
+        </p>
+      </section>
 
-      <div class="dashboard-cards">
-        <div class="card">
-          <h3>Всего пользователей</h3>
-          <p><%= totalUsers %></p>
-        </div>
-        <div class="card">
-          <h3>Активных менеджеров</h3>
-          <p><%= activeManagers %></p>
-        </div>
-        <div class="card">
-          <h3>Всего бронирований</h3>
-          <p><%= totalBookings %></p>
-        </div>
-        <div class="card">
-          <h3>Общая сумма заказов</h3>
-          <p><%= totalRevenue %> ₽</p>
-        </div>
-      </div>
-      <section class="charts">
-        <div class="charts-container">
-          <div class="chart-wrapper">
-            <h3>График заказов за последние 7 дней</h3>
-            <canvas id="bookingsChart"></canvas>
-          </div>
-          <div class="chart-wrapper">
-            <h3>Сумма бронирований по залам</h3>
-            <canvas id="hallChart"></canvas>
+      <section class="profile-section">
+        <div class="profile-card">
+          <img src="https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png" alt="Admin Avatar" class="avatar" />
+          <div class="profile-info">
+            <h3><%= adminName %></h3>
+            <p>
+              <i class="fa-solid fa-user-shield"></i> Статус: Администратор
+            </p>
           </div>
         </div>
       </section>
-    </main>
 
-    <script>
-      window.chartLabels = <%- JSON.stringify(chartLabels || []) %>;
-      window.chartData = <%- JSON.stringify(chartData || []) %>;
-      window.hallSums = <%- JSON.stringify(hallSums || {}) %>;
-    </script>
-    <script src="/script/adminCharts.js"></script>
+      <section class="dashboard-cards">
+        <div class="card">
+          <i class="fa-solid fa-users"></i>
+          <h3>Пользователи</h3>
+          <p><%= totalUsers %></p>
+        </div>
+        <div class="card">
+          <i class="fa-solid fa-hotel"></i>
+          <h3>Банкетные залы</h3>
+          <p><%= totalHalls %></p>
+        </div>
+        <div class="card">
+          <i class="fa-solid fa-calendar-check"></i>
+          <h3>Активные бронирования</h3>
+          <p><%= totalBookings %></p>
+        </div>
+        <div class="card">
+          <i class="fa-solid fa-coins"></i>
+          <h3>Общая сумма оплат</h3>
+          <p><%= totalRevenue %> BYN</p>
+        </div>
+      </section>
+
+    </main>
   </body>
 </html>

@@ -5,6 +5,7 @@ import authRoutes from './routes/authRoutes.js';
 import hallRoutes from './routes/hallRoutes.js';
 import mainRoutes from './routes/mainRoutes.js';
 import clientRoutes from './routes/clientRoutes.js';
+import managerRoutes from './routes/managerRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import ratingRoutes from './routes/ratingRoutes.js';
 import bookingRoutes from './routes/bookingRoutes.js'
@@ -31,6 +32,7 @@ app.use('/', bookingRoutes);
 app.use('/', clientRoutes);
 app.use('/', ratingRoutes);
 app.use('/',adminRoutes);
+app.use('/manager',managerRoutes);
 
 // app.use('/bookings', bookingRoutes);
 

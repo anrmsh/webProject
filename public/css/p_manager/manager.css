@@ -386,10 +386,152 @@ main {
   margin-top: 0.4rem;
 }
 
-/* Адаптация для телефона */
-@media (max-width: 700px) {
+
+
+
+/* ===== HALL SELECT ===== */
+.hall-select {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+  gap: 0.5rem;
+}
+
+.hall-select label {
+  font-size: 1.6rem;
+  color: #333;
+}
+
+.hall-select select {
+  padding: 0.6rem 1rem;
+  font-size: 1.5rem;
+  border-radius: 0.8rem;
+  border: 0.1rem solid #ccc;
+  min-width: 250px;
+  cursor: pointer;
+}
+
+.no-halls-message {
+  color: #555;
+  font-style: italic;
+  font-size: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+
+/* ===== BUTTONS ===== */
+.btn {
+  background: var(--pink);
+  color: #fff;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.8rem;
+  text-decoration: none;
+  text-align: center;
+  font-size: 0.9rem;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.btn.logout {
+  background: #555;
+}
+
+.btn:hover {
+  background: #902e53;
+}
+
+
+.box{
+    display: flex;
+    direction: row;
+}
+
+
+
+
+/* ===== MEDIA QUERIES ===== */
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.5rem;
+  }
+
   .dashboard-cards {
     grid-template-columns: 1fr;
-    max-width: 90%;
+    max-width: 55%;
+  }
+
+  .charts-container {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .chart-box canvas {
+    height: 250px !important;
+  }
+}
+
+
+
+/* новое */
+.box {
+  display: flex;
+  gap: 3rem; /* расстояние между графиками и карточками */
+  align-items: flex-start;
+  flex-wrap: wrap; /* перенос на маленьких экранах */
+}
+
+/* секция с графиками */
+.chart-section {
+  flex: 1 1 55%; /* графики занимают примерно 55% ширины */
+  display: flex;
+  flex-direction: column;
+  gap: 2rem; /* отступ между графиками */
+}
+
+/* контейнер каждого графика */
+.chart-box {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* графики подстраиваются по ширине и высоте */
+.chart-box canvas {
+  width: 100% !important;
+  height: 200px; /* можно подкорректировать по визуалу */
+}
+
+/* секция с карточками */
+.dashboard-cards {
+  flex: 0 0 40%; /* фиксированная ширина карточек */
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 колонки карточек */
+  grid-auto-rows: minmax(150px, auto); /* высота карточек */
+  gap: 2rem; /* расстояние между карточками */
+}
+
+/* адаптив */
+@media (max-width: 992px) {
+  .box {
+    flex-direction: column;
+  }
+
+  .chart-section, .dashboard-cards {
+    flex: 1 1 100%;
+  }
+
+  .dashboard-cards {
+    grid-template-columns: 1fr; /* карточки в одну колонку на мобильном */
+  }
+
+  .chart-box canvas {
+    height: 250px;
   }
 }

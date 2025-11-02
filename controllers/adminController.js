@@ -2,50 +2,37 @@ import { User, Role, BanquetHall, Booking, Rating, Client } from '../models/inde
 import bcrypt from "bcrypt";
 import { Op } from 'sequelize';
 
-// ===== Главная страница админа (дашборд) =====
-export const getAdminDashboard = async (req, res) => {
+// ===== Главная страница админа  =====
+export const getAdminHonePage = async (req, res) => {
     try {
+        const userId = req.user.user_id;
+        const user = await User.findByPk(userId);
         const totalUsers = await User.count();
         const activeManagers = await User.count({ where: { role_id: 2, status: 'active' } });
-        const totalBookings = await Booking.count();
-        const allBookings = await Booking.findAll({ include: [BanquetHall] });
-        const totalRevenue = allBookings.reduce((sum, b) => sum + parseFloat(b.payment_amount || 0), 0).toFixed(2);
-
-        // Топ-зал по сумме
-        const hallSums = {};
-        allBookings.forEach(b => {
-            const name = b.banquetHall ? b.banquetHall.hall_name : 'Без названия';
-            hallSums[name] = (hallSums[name] || 0) + parseFloat(b.payment_amount || 0);
+        const totalBookings = await Booking.count({
+            where: {status: {[Op.not]:'canceled'}}
         });
-        const topHall = Object.keys(hallSums).reduce((a, b) => hallSums[a] >= hallSums[b] ? a : b, '');
-
-        // График за последние 7 дней
-        const chartLabels = [];
-        const chartData = [];
-        for (let i = 6; i >= 0; i--) {
-            const date = new Date();
-            date.setDate(date.getDate() - i);
-            const dateStr = date.toISOString().split('T')[0];
-            chartLabels.push(dateStr);
-
-            const count = allBookings.filter(b => b.date === dateStr).length;
-            chartData.push(count);
-        }
+        const totalRevenue = await Booking.sum('payment_amount',{
+            where:{payment_status: 'paid'}
+        });
+        const totalHalls = await BanquetHall.count({
+            where: {status: 'approved'}
+        });
 
         const notifications = await BanquetHall.count({ where: { status: 'pending' } });
 
 
         res.render('p_admin/admin', {
-            adminName: req.user ? req.user.first_name : 'Администратор',
+            adminName: user? (user.first_name + ' ' + user.last_name) : 'Администратор',
             totalUsers,
+            totalHalls,
             activeManagers,
             totalBookings,
-            totalRevenue,
-            topHall,
-            chartLabels,
-            chartData,
+            totalRevenue: totalRevenue || 0,
             notifications: notifications,
-            hallSums
+            currentDate: new Date().toLocaleDateString('ru-RU',{
+                 day: 'numeric', month: 'long', year: 'numeric'
+            })
         });
     } catch (err) {
         console.error(err);
