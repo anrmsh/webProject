@@ -3,7 +3,7 @@ async function fetchDashboardData(){
     const data = await res.json();
     return data;
 }
-
+     
 function renderCharts(data){
     new Chart(document.getElementById('monthlyBookingsChart'), {
         type: 'line',
@@ -32,7 +32,7 @@ function renderCharts(data){
         },
         options: { responsive:true }
     });
-
+ 
     // Топ-5 залов
     new Chart(document.getElementById('topHallsChart'), {
         type: 'bar',
@@ -67,21 +67,14 @@ function renderCharts(data){
 
 async function initDashboard() {
     const data = await fetchDashboardData();
+
+    document.getElementById('approvedHalls').textContent = data.approvedHalls;
+    document.getElementById('confirmedBookings').textContent = data.confirmedBookings;
+    document.getElementById('clientsCount').textContent = data.clientsCount;
+    document.getElementById('totalRevenue').textContent = data.totalRevenue.toFixed(2);
     renderCharts(data);
 }
 
 initDashboard();
 
-// Экспорт в Word
-document.getElementById('exportBtn').addEventListener('click', () => {
-    fetch('/admin/export-dashboard')
-        .then(res => res.blob())
-        .then(blob => {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'dashboard.docx';
-            a.click();
-            window.URL.revokeObjectURL(url);
-        });
-});
+ 

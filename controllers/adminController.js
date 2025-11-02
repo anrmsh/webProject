@@ -1,7 +1,6 @@
-import { User, Role, BanquetHall, Booking, Rating } from '../models/index.js';
+import { User, Role, BanquetHall, Booking, Rating, Client } from '../models/index.js';
 import bcrypt from "bcrypt";
 import { Op } from 'sequelize';
-import WordExporter from '../public/script/p_admin/WordExporter.js'
 
 // ===== Главная страница админа (дашборд) =====
 export const getAdminDashboard = async (req, res) => {
@@ -33,6 +32,7 @@ export const getAdminDashboard = async (req, res) => {
             chartData.push(count);
         }
 
+        const notifications = await BanquetHall.count({ where: { status: 'pending' } });
 
 
         res.render('p_admin/admin', {
@@ -44,7 +44,7 @@ export const getAdminDashboard = async (req, res) => {
             topHall,
             chartLabels,
             chartData,
-            notifications: 0,
+            notifications: notifications,
             hallSums
         });
     } catch (err) {
@@ -177,8 +177,10 @@ export const getMonthlyBookings = async (req, res) => {
         const endDate = new Date(year, month, 1); // следующий месяц
 
         const bookings = await Booking.findAll({
-            where: { date: { [Op.gte]: startDate, [Op.lt]: endDate },
-        status: {[Op.in]:['confirmed', 'pending']} },
+            where: {
+                date: { [Op.gte]: startDate, [Op.lt]: endDate },
+                status: { [Op.in]: ['confirmed', 'pending'] }
+            },
             include: [BanquetHall],
             order: [['start_time', 'ASC']]
         });
@@ -390,56 +392,91 @@ export const updateHallStatus = async (req, res) => {
 };
 
 
-export const getDashboardData = async (req,res)=>{
-    try{
+export const getDashboardData = async (req, res) => {
+    try {
         const year = new Date().getFullYear();
-        const startDate = new Date(`${year}-01-01`);const endDate = new Date(`${year+1}-01-01`);
+        const startDate = new Date(`${year}-01-01`); const endDate = new Date(`${year + 1}-01-01`);
 
         const bookings = await Booking.findAll({
             where: { date: { [Op.gte]: startDate, [Op.lt]: endDate } },
             include: [BanquetHall]
         });
 
-        const months = Array.from({length:12},(_,i)=>new Date(year,i,1).toLocaleString('ru-RU',{month:'long'}));
+        const months = Array.from({ length: 12 }, (_, i) => new Date(year, i, 1).toLocaleString('ru-RU', { month: 'long' }));
         const bookingsPerMonth = Array(12).fill(0);
         const guestsPerMonth = Array(12).fill(0);
-        const statusCounts = { confirmed:0, pending:0, cancelled:0 };
+        const statusCounts = { confirmed: 0, pending: 0, cancelled: 0 };
 
         const hallMap = {};
 
         bookings.forEach(b => {
-            const month = b.date.getMonth();
+            const dayDate = new Date(b.date);
+            const month = dayDate.getMonth();
             bookingsPerMonth[month]++;
-            guestsPerMonth[month]+=b.guest_count;
+            guestsPerMonth[month] += b.guest_count;
 
-            statusCounts[b.status] = (statusCounts[b.status] || 0)+1;
+            statusCounts[b.status] = (statusCounts[b.status] || 0) + 1;
 
             const hallName = b.banquetHall ? b.banquetHall.hall_name : 'Без названия';
-            hallMap[hallName] = (hallMap[hallName] || 0)+1;
+            hallMap[hallName] = (hallMap[hallName] || 0) + 1;
         });
 
         // Топ-5 залов
         const topHalls = Object.entries(hallMap)
-            .map(([hall_name,count])=>({hall_name,count}))
-            .sort((a,b)=>b.count-a.count)
-            .slice(0,5);
+            .map(([hall_name, count]) => ({ hall_name, count }))
+            .sort((a, b) => b.count - a.count)
+            .slice(0, 5);
 
-        res.json({ months, bookingsPerMonth, guestsPerMonth, statusCounts, topHalls });
+        const approvedHalls = await BanquetHall.count({
+            where: { status: 'approved' }
+        });
+        const confirmedBookings = await Booking.count({
+            where: { status: 'confirmed' }
+        });
+        const clientsCount = await Client.count();
+        const totalRevenue = await Booking.sum('payment_amount', {
+            where: { payment_status: 'paid' }
+        });
 
-    } catch(err) {
+        res.json({
+            months,
+            bookingsPerMonth,
+            guestsPerMonth,
+            statusCounts,
+            topHalls,
+            approvedHalls,
+            confirmedBookings,
+            clientsCount,
+            totalRevenue,
+        });
+
+
+
+    } catch (err) {
         console.error(err);
-        res.status(500).json({error:'Ошибка получения данных'});
+        res.status(500).json({ error: 'Ошибка получения данных' });
     }
 };
 
-export const exportDashboard = async (req,res)=>{
-    try{
-        const wordBuffer = await WordExporter.generateDashboard();
-        res.setHeader('Content-Disposition', 'attachment; filename = "statistics.docx"');
-        res.setHeader('Content-Type','application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-        res.send(wordBuffer);
-    } catch(err){
-        console.error(err);
-        res.status(500).json({error:'Ошибка экспорта'});
+export const getNotifications = async (req, res) => {
+    try {
+        const pendingHalls = await BanquetHall.findAll({
+            where: { status: 'pending' },
+            include: [
+                {
+                    model: User,
+                    as: 'manager',
+                    attributes: ['first_name', 'last_name']
+                }
+            ]
+        });
+
+        res.render('p_admin/notifications', {
+            title: 'Уведомления',
+            pendingHalls,
+        });
+    } catch (error) {
+        console.error("Ошибка при загрузке уведомлений:", error);
+        res.status(500).send("Ошибка при загрузке уведомлений");
     }
-}
+};

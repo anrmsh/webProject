@@ -6,18 +6,18 @@ import {
     getAdminCalendar,
     getAdminStats,
     createManager,
-    deleteUser, 
+    deleteUser,
     updateUserStatus,
     getHallById,
     updateHallStatus,
     getBookingsByDate,
     getMonthlyBookings,
-    getDashboardData,  
-    exportDashboard   
+    getDashboardData,
+    getNotifications,
 } from '../controllers/adminController.js';
 import { authMiddleware } from "../middleware/middleware.js";
 
-const router = express.Router();  
+const router = express.Router();
 
 // Дашборд
 router.get('/admin', getAdminDashboard);
@@ -39,16 +39,17 @@ router.delete("/admin/users/:id", deleteUser);
 router.patch("/admin/users/:id/status", updateUserStatus);
 
 
-
-router.get('/admin/halls/:id',getHallById); 
+router.get('/admin/halls/:id', getHallById);
 router.put('/admin/halls/:hallId/status', updateHallStatus);
 
 router.get('/admin/calendar/:date', getBookingsByDate);
 router.get('/admin/calendar/:year/:month', getMonthlyBookings);
 
 router.get('/admin/dashboard-data', getDashboardData);
-router.get('/admin/export-dashboard', exportDashboard);
 
-  
-export default router;  
- 
+router.get('/admin/notifications', getNotifications);
+router.put('/admin/notifications/:hallId/status', updateHallStatus);
+
+
+
+export default router;

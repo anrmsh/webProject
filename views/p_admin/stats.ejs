@@ -5,14 +5,40 @@
     <title>Админ Дашборд</title>
     <link rel="stylesheet" href="/css/admin.css">
     <link rel="stylesheet" href="/css/p_admin/stats.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 <header>
+    <a href="/admin" class="back-btn"
+        ><i class="fas fa-arrow-left" style="color: white"></i> Назад</a
+      >
     <h1>Дашборд администратора</h1>
-    <button id="exportBtn">Экспорт в Word</button>
 </header>
+<!-- ======= БЛОК СТАТИСТИКИ ======= -->
+<section class="stats-overview">
+    <div class="stat-card">
+        <h3>Активных залов</h3>
+        <p id="approvedHalls"> - </p>
+    </div>
+    <div class="stat-card">
+        <h3>Проведённых мероприятий</h3>
+        <p id="confirmedBookings"> - </p>
+    </div>
+    <div class="stat-card">
+        <h3>Клиентов</h3>
+        <p id="clientsCount"> - </p>
+    </div>
+    <div class="stat-card">
+        <h3>Оплачено (BYN)</h3>
+        <p id="totalRevenue"> - </p>
+    </div>
+</section>
 
+<!-- ======= ГРАФИКИ ======= -->
 <div class="dashboard-wrapper">
     <div class="chart-container">
         <h2>Бронирования по месяцам</h2>

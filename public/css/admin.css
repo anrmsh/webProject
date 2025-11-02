@@ -183,4 +183,32 @@ main {
   width: 100% !important;
   height: 250px !important;
 }
+.icons {
+  position: relative;
+}
+
+.icons .fa-bell {
+  position: relative;
+  font-size: 1.8rem;
+  color: #333;
+}
+
+.notif-count {
+  position: absolute;
+  top: -5px;     
+  right: -5px;   
+  background: #dc3545; 
+  color: #fff;
+  font-size: 0.7rem;   
+  font-weight: bold;
+  border-radius: 50%;  
+  min-width: 16px;    
+  height: 16px;
+  padding: 0 4px;     
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 2px rgba(0,0,0,0.3);
+  z-index: 10;
+}
 

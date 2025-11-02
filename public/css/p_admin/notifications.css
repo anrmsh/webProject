@@ -1,0 +1,89 @@
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  box-shadow: var(--shadow);
+  padding: 1.5rem 9%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 1000;
+}
+
+.notification-card {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  font-size: 1.5rem;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-header h3 {
+  margin: 0;
+  color: var(--pink);
+}
+
+.card-details {
+  display: none; /* по умолчанию скрыто */
+  margin-top: 1rem;
+}
+
+.hall-image {
+  /* max-width: 100%; */
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  overflow: hidden;
+
+}
+
+.toggle-details {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.notifications-page h2{
+    margin-bottom: 80px;
+    font-size: 1.5rem;
+    color: #ae3962;
+    font-weight: bold;
+}
+
+
+header h1 {
+  font-size: 2.4rem;
+  color: #333;
+}
+
+.back-btn {
+  color: var(--pink);
+  font-size: 1.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(174, 57, 98, 0.1);
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.6rem;
+  transition: 0.3s;
+}
+
+.back-btn:hover {
+  background: var(--pink);
+  color: #fff;
+}
+
+.card-header h3{
+    font-weight: bold;
+}

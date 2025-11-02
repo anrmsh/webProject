@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Уведомления</title>
+    <link rel="stylesheet" href="/css/admin.css" />
+    <link rel="stylesheet" href="/css/p_admin/notifications.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <!-- <a href="/" class="logo">BanquetBook<span>.</span></a>
+      <nav class="navbar">
+        <a href="/admin/users">Пользователи</a>
+        <a href="/admin/halls">Залы</a>
+        <a href="/admin/calendar">Календарь событий</a>
+        <a href="/admin/stats">Статистика</a>
+      </nav>
+      <div class="icons">
+        <a
+          href="/notifications"
+          class="fas fa-bell active"
+          title="Уведомления"
+        ></a>
+        <a href="/logout" class="fas fa-right-from-bracket" title="Выйти"></a>
+      </div> -->
+       <a href="/admin" class="back-btn"
+        ><i class="fas fa-arrow-left"></i> Назад</a
+      >
+      <h1>Заявки на добавление залов</h1>
+    </header>
+
+    <main class="notifications-page">
+      <!-- <h2>Заявки на добавление залов</h2> -->
+
+      <% if (pendingHalls.length === 0) { %>
+      <p class="empty">Нет новых уведомлений 🎉</p>
+      <% } else { %>
+      <div class="notifications-list">
+        <% pendingHalls.forEach(hall => { %>
+        <div class="notification-card" data-id="<%= hall.hall_id %>">
+          <!-- Заголовок карточки: всегда виден -->
+          <div class="card-header">
+            <h3><%= hall.hall_name %></h3>
+            <p>
+              <strong>Менеджер:</strong> <%= hall.manager.first_name %> <%=
+              hall.manager.last_name %>
+            </p>
+            <button class="toggle-details">▼</button>
+          </div>
+
+          <!-- Детали карточки: скрыты по умолчанию -->
+          <div class="card-details">
+            <p><strong>Описание:</strong> <%= hall.description %></p>
+            <p><strong>Цена:</strong> <%= hall.price %> BYN</p>
+            <p><strong>Вместимость:</strong> <%= hall.capacity %> чел.</p>
+            <% if(hall.image_path) { %>
+            <img
+              src="<%= hall.image_path %>"
+              alt="Фото зала"
+              class="hall-image"
+            />
+            <% } %>
+
+            <div class="actions">
+              <button class="btn approve" data-action="approved">
+                Одобрить
+              </button>
+              <button class="btn reject" data-action="inactive">
+                Отклонить
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <% }) %>
+      </div>
+      <% } %>
+    </main>
+    <script src="/script/p_admin/notifications.js"></script>
+  </body>
+</html>
