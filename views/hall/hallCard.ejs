@@ -3,12 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <title><%= hall.hall_name %> | Restoplace</title>
-
-    <!-- Основные стили -->
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/hallCard.css" />
-
-    <!-- Иконки и Flatpickr -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
@@ -59,10 +55,6 @@
             <p><strong>Адрес:</strong> <%= hall.address %></p>
             <p class="hall-description"><%= hall.description %></p>
           </div>
-          <!-- <p><strong>Вместимость:</strong> <%= hall.capacity %> гостей</p>
-        <p><strong>Цена за час:</strong> <%= hall.price %> BYN</p>
-        <p><strong>Адрес:</strong> <%= hall.address %></p>
-        <p class="hall-description"><%= hall.description %></p> -->
           <button class="btn" id="bookBtn">Забронировать</button>
         </div>
       </div>
@@ -72,39 +64,6 @@
     <div class="modal" id="bookingModal">
       <div class="modal-content">
         <h3>Бронирование зала</h3>
-        <!-- <form id="bookingForm">
-        <input type="hidden" name="hall_id" value="<%= hall.hall_id %>">
-
-        <label>Дата</label>
-        <input type="text" id="datePicker" name="date" required>
-
-        <label>Время начала</label>
-        <input type="time" name="start_time" required>
-
-        <label>Время окончания</label>
-        <input type="time" name="end_time" required>
-
-        <label>Количество гостей</label>
-        <input type="number" name="guest_count" min="1" max="<%= hall.capacity %>" required>
-
-        <label>Выберите дополнительные услуги</label>
-        <div id="servicesList">
-          <% services.forEach(service => { %>
-            <div class="service-item">
-              <input type="checkbox" class="service-checkbox"
-                     data-price="<%= service.price %>"
-                     name="services"
-                     value="<%= service.service_id %>">
-              <span><%= service.service_name %> (+<%= service.price %> BYN)</span>
-            </div>
-          <% }) %>
-        </div>
-
-        <h4 class="total-text">Общая стоимость: <span id="totalPrice"><%= hall.price %></span> BYN</h4>
-
-        <button type="submit" class="btn">Подтвердить бронирование</button>
-        <button type="button" id="waitListBtn" class="btn btn-secondary">В лист ожидания</button>
-      </form> -->
         <form id="bookingForm" action="/bookings" method="POST">
           <input type="hidden" name="hall_id" value="<%= hall.hall_id %>" />
 
@@ -148,7 +107,7 @@
             Общая стоимость: <span id="totalPrice"><%= hall.price %></span> BYN
           </h4>
 
-          <button type="submit" class="btn">Подтвердить бронирование</button>
+          <button type="submit" class="btn">Оформить бронирование</button>
         </form>
       </div>
     </div>

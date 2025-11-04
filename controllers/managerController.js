@@ -1,6 +1,7 @@
 import { Sequelize } from "sequelize";
-import { BanquetHall, Booking, EventType, Rating, User, Client } from "../models/index.js";
-const { Op } = Sequelize;
+import { BanquetHall, Booking, EventType, Rating, User, Client, Report } from "../models/index.js";
+const { Op, fn, col, literal } = Sequelize;
+import ExcelJS from "exceljs";
 
 export const getManagerHomePage = async (req, res) => {
     try {
@@ -292,4 +293,275 @@ export const postRegisterHall = async (req, res) => {
             message: 'Не удалось зарегистрировать зал. Попробуйте позже.'
         });
     }
+};
+
+export const getReportPage = async (req, res) => {
+    const managerId = req.user.user_id;
+    const manager = await User.findByPk(managerId);
+    const lastReport = await Report.findOne({
+        order: [['report_id', 'DESC']]
+    });
+    const nextId = (lastReport?.report_id || 0) + 1;
+    const currentDate = new Date().toLocaleDateString('ru-RU');
+
+    res.render('p_manager/report', {
+        reportId: nextId,
+        managerName: `${manager.last_name} ${manager.first_name[0]}.`,
+        currentDate,
+    });
+};
+
+export const getReportData = async (req, res) => {
+    try {
+        const { start, end } = req.query;
+        const managerId = req.user.user_id;
+
+        const halls = await BanquetHall.findAll({
+            where: { manager_id: managerId },
+            attributes: ["hall_id", "hall_name"],
+        });
+        const hallIds = halls.map((h) => h.hall_id);
+
+        if (!hallIds.length) return res.json([]);
+
+        const data = await Booking.findAll({
+            where: {
+                hall_id: { [Op.in]: hallIds },
+                date: { [Op.between]: [start, end] },
+            },
+            attributes: [
+                [col("booking.hall_id"), "hall_id"],
+                [fn("COUNT", col("booking.booking_id")), "bookings_count"],
+                [literal("SUM(CASE WHEN `booking`.`status` = 'confirmed' THEN 1 ELSE 0 END)"), "completed_count"],
+                [literal("SUM(CASE WHEN `booking`.`status` = 'cancelled' THEN 1 ELSE 0 END)"), "cancelled_count"],
+                [fn("SUM", col("booking.payment_amount")), "revenue_sum"],
+            ],
+            group: ["booking.hall_id"],
+            include: [{ model: BanquetHall, attributes: ["hall_name"] }],
+        });
+
+        const result = data.map((d) => ({
+            hall_name: d.banquetHall?.hall_name || "—",
+            bookings_count: Number(d.get("bookings_count")),
+            completed_count: Number(d.get("completed_count")),
+            cancelled_count: Number(d.get("cancelled_count")),
+            revenue_sum: Number(d.get("revenue_sum")).toFixed(2),
+        }));
+
+        res.json(result);
+    } catch (err) {
+        console.error("Ошибка в getReportData:", err);
+        res.status(500).json({ error: "Ошибка при получении данных отчёта" });
+    }
+};
+
+export const saveReport = async (req, res) => {
+    try {
+        const { start, end } = req.body;
+        const managerId = req.user.user_id;
+
+        const halls = await BanquetHall.findAll({
+            where: { manager_id: managerId },
+            attributes: ["hall_id", "hall_name"],
+        });
+
+        const hallIds = halls.map((h) => h.hall_id);
+
+        if (hallIds.length === 0) {
+            return res.status(400).json({ message: "Нет залов для менеджера" });
+        }
+
+        const data = await Booking.findAll({
+            where: {
+                hall_id: { [Op.in]: hallIds },
+                date: { [Op.between]: [start, end] },
+            },
+            attributes: [
+                [col("booking.hall_id"), "hall_id"],
+                [fn("COUNT", col("booking.booking_id")), "bookings_count"],
+                [literal("SUM(CASE WHEN `booking`.`status` = 'confirmed' THEN 1 ELSE 0 END)"), "completed_count"],
+                [fn("SUM", col("booking.payment_amount")), "revenue_sum"],
+            ],
+            group: ["booking.hall_id"],
+            include: [{ model: BanquetHall, attributes: ["hall_name"] }],
+        });
+
+        const reportData = data.map((d) => {
+            const hallObj = d.banquetHall || d.BanquetHall || (d.get ? d.get("banquetHall") : null);
+            return {
+                hall_name: hallObj?.hall_name || "—",
+                bookings_count: Number(d.get ? d.get("bookings_count") : d.dataValues.bookings_count || 0),
+                completed_count: Number(d.get ? d.get("completed_count") : d.dataValues.completed_count || 0),
+                revenue_sum: Number(d.get ? d.get("revenue_sum") : d.dataValues.revenue_sum || 0).toFixed(2),
+            };
+        });
+
+        await Report.create({
+            manager_id: managerId,
+            period_start: start,
+            period_end: end,
+            report_data: JSON.stringify(reportData),
+        });
+
+        res.json({ message: "Отчет успешно сохранён" });
+    } catch (error) {
+        console.error("Ошибка при сохранении отчёта:", error);
+        res.status(500).json({ message: "Ошибка при сохранении отчёта" });
+    }
 }
+
+export const exportReportExcel = async (req, res) => {
+    try {
+        const { start, end } = req.query;
+        const managerId = req.user.user_id;
+
+        // Получаем менеджера
+        const manager = await User.findByPk(managerId, {
+            attributes: ["first_name", "last_name"],
+        });
+
+        // Получаем залы менеджера
+        const halls = await BanquetHall.findAll({
+            where: { manager_id: managerId },
+            attributes: ["hall_id", "hall_name"],
+        });
+        const hallIds = halls.map((h) => h.hall_id);
+
+        // Получаем бронирования
+        const data = await Booking.findAll({
+            where: {
+                hall_id: { [Op.in]: hallIds },
+                date: { [Op.between]: [start, end] },
+            },
+            attributes: [
+                [col("booking.hall_id"), "hall_id"],
+                [fn("COUNT", col("booking.booking_id")), "bookings_count"],
+                [
+                    literal("SUM(CASE WHEN `booking`.`status` = 'confirmed' THEN 1 ELSE 0 END)"),
+                    "completed_count",
+                ],
+                [
+                    literal("SUM(CASE WHEN `booking`.`status` = 'cancelled' THEN 1 ELSE 0 END)"),
+                    "cancelled_count",
+                ],
+                [fn("SUM", col("booking.payment_amount")), "revenue_sum"],
+            ],
+            group: ["booking.hall_id"],
+            include: [{ model: BanquetHall, attributes: ["hall_name"] }],
+        });
+
+        // ===== Создаём Excel файл =====
+        const workbook = new ExcelJS.Workbook();
+        const sheet = workbook.addWorksheet("Отчёт по залам");
+
+        // ===== Шапка документа =====
+        sheet.addRow([]);
+        const orgRow = sheet.addRow(["ООО «BanquetBook»"]);
+        sheet.mergeCells(`A${orgRow.number}:F${orgRow.number}`);
+        orgRow.font = { bold: true, size: 16 };
+        orgRow.alignment = { horizontal: "center" };
+
+        const periodRow = sheet.addRow([`Отчёт по залам за период ${start} — ${end}`]);
+        sheet.mergeCells(`A${periodRow.number}:F${periodRow.number}`);
+        periodRow.font = { bold: true, size: 13 };
+        periodRow.alignment = { horizontal: "center" };
+
+        sheet.addRow([]); // пустая строка между шапкой и таблицей
+
+        // ===== Колонки таблицы =====
+        sheet.columns = [
+            { header: "Зал", key: "hall_name", width: 25 },
+            { header: "Кол-во бронирований", key: "bookings_count", width: 20 },
+            { header: "Проведено мероприятий", key: "completed_count", width: 20 },
+            { header: "Отменено", key: "cancelled_count", width: 15 },
+            { header: "Процент отмен (%)", key: "cancelled_percent", width: 20 },
+            { header: "Выручка (BYN)", key: "revenue_sum", width: 15 },
+        ];
+
+        // Стили для заголовков таблицы
+        //const headerRow = sheet.getRow(sheet.lastRow.number + 1);
+        sheet.addRow({}); // создаём заголовок через columns
+        sheet.getRow(sheet.lastRow.number).eachCell((cell) => {
+            cell.font = { bold: true };
+            cell.alignment = { horizontal: "center", vertical: "middle", wrapText: true };
+        });
+
+        // ===== Заполняем данные =====
+        let totalRevenue = 0;
+        let totalBookings = 0;
+        let totalCompleted = 0;
+        let totalCancelled = 0;
+
+        data.forEach((d) => {
+            const bookings = Number(d.get("bookings_count"));
+            const cancelled = Number(d.get("cancelled_count"));
+            const completed = Number(d.get("completed_count"));
+            const revenue = Number(d.get("revenue_sum")) || 0;
+            const percentCancelled = bookings ? ((cancelled / bookings) * 100).toFixed(1) : 0;
+
+            const row = sheet.addRow({
+                hall_name: d.banquetHall?.hall_name || "—",
+                bookings_count: bookings,
+                completed_count: completed,
+                cancelled_count: cancelled,
+                cancelled_percent: percentCancelled,
+                revenue_sum: revenue.toFixed(2),
+            });
+
+            row.alignment = { horizontal: "center" };
+
+            totalRevenue += revenue;
+            totalBookings += bookings;
+            totalCompleted += completed;
+            totalCancelled += cancelled;
+        });
+
+        // ===== Итоговая строка =====
+        sheet.addRow([]);
+        const totalRow = sheet.addRow({
+            hall_name: "ИТОГО:",
+            bookings_count: totalBookings,
+            completed_count: totalCompleted,
+            cancelled_count: totalCancelled,
+            cancelled_percent: totalBookings ? ((totalCancelled / totalBookings) * 100).toFixed(1) : 0,
+            revenue_sum: totalRevenue.toFixed(2),
+        });
+        totalRow.font = { bold: true };
+        totalRow.alignment = { horizontal: "center" };
+
+        // ===== Подвал документа =====
+        sheet.addRow([]);
+        const footerRow = sheet.addRow([
+            `Дата составления: ${new Date().toLocaleDateString("ru-RU")}`,
+            "",
+            `Менеджер: ${manager.last_name} ${manager.first_name}`,
+            "",
+            "Подпись: ___________________",
+        ]);
+        footerRow.font = { italic: true };
+        footerRow.eachCell((cell) => {
+            cell.alignment = { horizontal: "center" };
+        });
+
+        // ===== Выдача файла =====
+        res.setHeader(
+            "Content-Disposition",
+            `attachment; filename=report_${start}_${end}.xlsx`
+        );
+        res.setHeader(
+            "Content-Type",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        );
+
+        await workbook.xlsx.write(res);
+        res.end();
+    } catch (err) {
+        console.error("Ошибка при экспорте отчёта:", err);
+        res.status(500).json({ message: "Ошибка при экспорте отчёта" });
+    }
+};
+
+
+
+
+

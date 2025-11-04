@@ -7,7 +7,11 @@ import {
    getManagerBookings,
    getManagerShedulePage,
    getRegisterHallPage,
-   postRegisterHall
+   postRegisterHall,
+   getReportPage,
+   getReportData,
+   saveReport,
+   exportReportExcel
 
 } from '../controllers/managerController.js';
 
@@ -23,5 +27,11 @@ router.get('/bookings', getManagerBookings);
 
 router.get('/register-hall', getRegisterHallPage);
 router.post('/register-hall', postRegisterHall);
+
+router.get("/report", getReportPage);
+router.get("/report/data", getReportData);
+router.post("/report/save", saveReport);
+
+router.get('/report/export', exportReportExcel)
 
 export default router;

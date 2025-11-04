@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Отчёт — Панель менеджера</title>
+    <link rel="stylesheet" href="/css/p_manager/report.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <a href="/" class="logo">BanquetBook<span>.</span></a>
+      <nav class="navbar">
+        <a href="/manager/waiting-list">Лист ожидания</a>
+        <a href="/manager/schedule">Расписание</a>
+        <a href="/manager/ratings">Оценки</a>
+        <a href="/manager/report" class="active">Отчёт</a>
+      </nav>
+      <div class="icons">
+        <a href="/logout" class="fas fa-right-from-bracket" title="Выйти"></a>
+      </div>
+    </header>
+
+    <main class="report-main">
+      <section class="report-header">
+        <h1>ООО «BanquetBook»</h1>
+        <h2>Отчёт № <%= reportId %></h2>
+        <div class="period">
+          <label>Период: </label>
+          <input type="date" id="startDate" />
+          <span>—</span>
+          <input type="date" id="endDate" />
+          <button id="loadReport" class="btn">
+            <i class="fa-solid fa-magnifying-glass"></i> Сформировать
+          </button>
+        </div>
+      </section>
+
+      <section class="report-table-section">
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th>Зал</th>
+              <th>Кол-во бронирований</th>
+              <th>Проведено мероприятий</th>
+              <th>Выручка (BYN)</th>
+            </tr>
+          </thead>
+          <tbody id="reportBody">
+            <tr>
+              <td colspan="4" class="empty">
+                Выберите период и нажмите «Сформировать»
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+      <section class="report-summary">
+        <h3>Итоги по всем залам</h3>
+        <div class="summary-grid" id="summaryBlock">
+          <div class="summary-item">
+            <span>Общая выручка:</span>
+            <strong id="totalRevenue">0.00 BYN</strong>
+          </div>
+          <div class="summary-item">
+            <span>Всего бронирований:</span>
+            <strong id="totalBookings">0</strong>
+          </div>
+          <div class="summary-item">
+            <span>Проведено мероприятий:</span>
+            <strong id="completedPercent">0%</strong>
+          </div>
+          <div class="summary-item">
+            <span>Отменено:</span> <strong id="cancelledPercent">0%</strong>
+          </div>
+          <div class="summary-item">
+            <span>Средний чек:</span> <strong id="avgCheck">0.00 BYN</strong>
+          </div>
+        </div>
+
+        <button id="exportExcel" class="btn export-btn">
+          <i class="fa-solid fa-file-excel"></i> Экспорт в Excel
+        </button>
+      </section>
+
+      <section class="report-footer">
+        <p>Дата составления: <span id="reportDate"><%= currentDate %></span></p>
+        <p>Менеджер: <strong><%= managerName %></strong></p>
+        <button id="submitReport" class="btn send-btn">
+          <i class="fa-solid fa-paper-plane"></i> Подтвердить и отправить отчёт
+        </button>
+      </section>
+    </main>
+
+    <div class="modal-overlay" id="modalOverlay" style="display: none">
+      <div class="modal-box">
+        <div class="modal-icon success">
+          <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <h2>Успех!</h2>
+        <p>Отчёт успешно отправлен.</p>
+        <button id="closeModal">Закрыть</button>
+      </div>
+    </div>
+
+    <script src="/script/p_manager/report.js"></script>
+  </body>
+</html>
