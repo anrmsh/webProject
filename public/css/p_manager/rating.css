@@ -1,0 +1,83 @@
+:root {
+  --pink: #ae3962;
+  --shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+body {
+  background: #f8f8f8;
+  font-family: Verdana, sans-serif;
+  margin: 0;
+}
+
+header {
+  background: #fff;
+  padding: 1rem 3rem;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-size: 2rem;
+  color: var(--pink);
+  text-decoration: none;
+}
+
+.navbar a {
+  margin: 0 1rem;
+  text-decoration: none;
+  color: #333;
+}
+
+.navbar a.active {
+  color: var(--pink);
+  font-weight: bold;
+}
+
+.dashboard-cards {
+  display: flex;
+  gap: 2rem;
+  margin: 2rem;
+  flex-wrap: wrap;
+}
+
+.card {
+  background: #fff;
+  flex: 1;
+  min-width: 200px;
+  border-radius: 1rem;
+  box-shadow: var(--shadow);
+  padding: 1rem;
+  text-align: center;
+}
+
+.card i {
+  color: var(--pink);
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.chart-section {
+  margin: 2rem;
+  background: #fff;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+}
+
+.charts-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.chart-box {
+  flex: 1;
+  min-width: 350px;
+}
+
+#hallSelect {
+  padding: 0.5rem;
+  font-size: 1rem;
+}

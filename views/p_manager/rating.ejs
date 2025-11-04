@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Оценки — Панель менеджера</title>
+    <link rel="stylesheet" href="/css/p_manager/rating.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <header>
+      <a href="/" class="logo">BanquetBook<span>.</span></a>
+      <nav class="navbar">
+        <a href="/manager/waiting-list">Лист ожидания</a>
+        <a href="/manager/schedule">Расписание</a>
+        <a href="/manager/ratings" class="active">Оценки</a>
+        <a href="/manager/report">Отчёт</a>
+      </nav>
+      <div class="icons">
+        <a href="/logout" class="fas fa-right-from-bracket" title="Выйти"></a>
+      </div>
+    </header>
+
+    <main class="manager-home">
+      <section class="welcome">
+        <h2>Оценки залов</h2>
+        <p>Дата: <%= currentDate %></p>
+      </section>
+
+      <section class="hall-select">
+        <% if (halls && halls.length > 0) { %>
+          <label for="hallSelect">Выберите зал:</label>
+          <select id="hallSelect">
+            <option value="all">Все залы</option>
+            <% halls.forEach(hall => { %>
+              <option value="<%= hall.hall_id %>"><%= hall.hall_name %></option>
+            <% }) %>
+          </select>
+        <% } else { %>
+          <p class="no-halls-message">У вас пока нет назначенных залов.</p>
+        <% } %>
+      </section>
+
+      <div class="box">
+        <section class="dashboard-cards">
+          <div class="card">
+            <i class="fa-solid fa-star"></i>
+            <h3>Средний рейтинг</h3>
+            <p id="avgRating">-</p>
+          </div>
+          <div class="card">
+            <i class="fa-solid fa-chart-simple"></i>
+            <h3>Кол-во оценок</h3>
+            <p id="ratingsCount">-</p>
+          </div>
+          <div class="card">
+            <i class="fa-solid fa-clock"></i>
+            <h3>Последние 30 дней</h3>
+            <p id="recentCount">-</p>
+          </div>
+        </section>
+
+        <section class="chart-section">
+          <h3>Аналитика оценок</h3>
+          <div class="charts-container">
+            <div class="chart-box">
+              <h4>Распределение оценок (1–5)</h4>
+              <canvas id="distributionChart"></canvas>
+            </div>
+            <div class="chart-box">
+              <h4>Динамика среднего рейтинга (по месяцам)</h4>
+              <canvas id="trendChart"></canvas>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script src="/script/p_manager/rating.js"></script>
+  </body>
+</html>

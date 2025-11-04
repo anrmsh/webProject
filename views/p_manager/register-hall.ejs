@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Регистрация банкетного зала</title>
+    <link rel="stylesheet" href="/css/p_manager/manager.css" />
+    <link rel="stylesheet" href="/css/p_manager/registerHall.css" />
+  </head>
+  <body>
+    <header>
+      <a href="/" class="logo">BanquetBook<span>.</span></a>
+      <nav class="navbar">
+        <a href="/manager">Главная</a>
+        <a href="/manager/schedule">Расписание</a>
+        <a href="/manager/report">Отчёты</a>
+      </nav>
+      <div class="icons">
+        <a href="/logout" class="fas fa-right-from-bracket" title="Выйти"></a>
+      </div>
+    </header>
+
+    <main class="form-container">
+      <h2>Заявление на регистрацию банкетного зала</h2>
+
+      <div class="form-preview-wrapper">
+        <form
+          id="addHallForm"
+          action="/manager/register-hall"
+          method="POST"
+          class="hall-form"
+        >
+          <label for="image_path">URL фото зала</label>
+          <input
+            type="url"
+            id="image_path"
+            name="image_path"
+            placeholder="https://..."
+          />
+
+          <label for="hall_name">Название зала*</label>
+          <input type="text" id="hall_name" name="hall_name" required />
+
+          <label for="description">Описание</label>
+          <textarea id="description" name="description" rows="4"></textarea>
+
+          <label for="capacity">Вместимость (чел.)*</label>
+          <input type="number" id="capacity" name="capacity" required min="1" />
+
+          <label for="price">Цена аренды (BYN)*</label>
+          <input type="number" id="price" name="price" step="0.01" required />
+
+          <label for="address">Адрес*</label>
+          <input type="text" id="address" name="address" required />
+
+          <div class="signature">
+            <p>
+              Дата подачи:
+              <strong><%= new Date().toLocaleDateString('ru-RU') %></strong>
+            </p>
+            <p>Менеджер: <strong><%= managerName %></strong></p>
+          </div>
+
+          <button type="submit" class="btn">Отправить заявление</button>
+        </form>
+
+        <div class="hall-image-preview">
+          <span class="placeholder-text">Добавьте фото банкетного зала</span>
+          <img id="hallPreview" src="" alt="Фото зала" />
+        </div>
+      </div>
+
+      <!-- модальное окно -->
+      <div id="messageModal" class="modal-overlay" style="display: none">
+        <div class="modal-box">
+          <span id="modalIcon" class="modal-icon"></span>
+          <h2 id="modalTitle"></h2>
+          <p id="modalText"></p>
+          <button id="modalClose">OK</button>
+        </div>
+      </div>
+    </main>
+
+    <script src="/script/p_manager/registerHall.js"></script>
+  </body>
+</html>

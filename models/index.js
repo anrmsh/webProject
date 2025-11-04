@@ -8,6 +8,8 @@ import { Service } from './Service.js';
 import { BookingService } from './BookingService.js';
 import { Rating } from './Rating.js';
 import { WaitingList } from './WaitingList.js';
+import { EventType } from './EventType.js';
+import { Report } from './Report.js';
    
 Role.hasMany(User, { foreignKey: 'role_id' });
 User.belongsTo(Role, { foreignKey: 'role_id' });
@@ -54,6 +56,23 @@ Service.hasMany(BookingService, { foreignKey: 'service_id' });
 BookingService.belongsTo(Service, { foreignKey: 'service_id' });
 
 
+EventType.hasMany(Booking, { foreignKey: 'event_type_id' });
+Booking.belongsTo(EventType, { foreignKey: 'event_type_id' });
+
+
+User.hasMany(Report, {
+    foreignKey: 'manager_id',
+    as: 'reports',
+    onDelete: 'CASCADE'
+});
+
+// Каждый отчёт принадлежит менеджеру
+Report.belongsTo(User, {
+    foreignKey: 'manager_id',
+    as: 'manager'
+});
+
+
 try {
     await sequelize.authenticate();
     console.log(' Подключение к базе данных успешно установлено');
@@ -72,4 +91,6 @@ export {
     BookingService,
     Rating,
     WaitingList,
+    EventType,
+    Report
 };

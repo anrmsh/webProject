@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Расписание — Панель менеджера</title>
+  <link rel="stylesheet" href="/css/p_manager/manager.css" />
+   <link rel="stylesheet" href="/css/p_manager/schedule.css" />
+ 
+</head>
+<body>
+  <header>
+    <a href="/" class="logo">BanquetBook<span>.</span></a>
+  </header>
+
+  <main class="schedule-container">
+    <h2>Расписание залов</h2>
+    <div class="controls">
+      <label for="hallSelect">Зал:</label>
+      <select id="hallSelect">
+        <% if (halls && halls.length) { %>
+          <% halls.forEach(h => { %>
+            <option value="<%= h.hall_id %>"><%= h.hall_name %></option>
+          <% }) %>
+        <% } else { %>
+          <option value="">У вас нет залов</option>
+        <% } %>
+      </select>
+
+      <label for="dateInput">Дата:</label>
+      <input type="date" id="dateInput" value="<%= new Date().toISOString().slice(0,10) %>"/>
+
+      <button id="refreshBtn" class="btn-small">Обновить</button>
+    </div>
+
+    <div id="timeline" aria-live="polite">
+      <div class="empty">Выберите зал и дату, чтобы увидеть мероприятия</div>
+    </div>
+  </main>
+
+  <!-- Модал (простенький) -->
+  <div id="modal" style="display:none; position:fixed; left:0; top:0; right:0; bottom:0; background:rgba(0,0,0,0.4); align-items:center; justify-content:center;">
+    <div style="background:#fff; padding:1.2rem; border-radius:8px; width:420px; max-width:95%;">
+      <button id="closeModal" style="float:right; background:none; border:none; font-size:1.2rem; cursor:pointer;">✕</button>
+      <h3 id="modalTitle">Детали брони</h3>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <script src="/script/p_manager/schedule.js"></script>
+</body>
+</html>
