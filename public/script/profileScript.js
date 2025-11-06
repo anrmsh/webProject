@@ -36,13 +36,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             box.querySelectorAll('.confirm-btn, .cancel-btn, .edit-btn, p').forEach(el => {
-            // удаляем кнопки и текст, если они не нужны
-            if (el.tagName === 'P' && el.textContent.includes('Редактирование недоступно')) {
-                el.remove();
-            } else if (el.classList.contains('confirm-btn') || el.classList.contains('cancel-btn') || el.classList.contains('edit-btn')) {
-                el.remove();
-            }
-        });
+                // удаляем кнопки и текст, если они не нужны
+                if (el.tagName === 'P' && el.textContent.includes('Редактирование недоступно')) {
+                    el.remove();
+                } else if (el.classList.contains('confirm-btn') || el.classList.contains('cancel-btn') || el.classList.contains('edit-btn')) {
+                    el.remove();
+                }
+            });
 
             // const confirmBtn = box.querySelector('.confirm-btn');
             // const cancelBtn = box.querySelector('.cancel-btn');
@@ -59,12 +59,12 @@ document.addEventListener('DOMContentLoaded', () => {
             // if (editBtn) editBtn.remove();
 
             box.querySelectorAll('.confirm-btn, .cancel-btn, .edit-btn, p').forEach(el => {
-            if (el.tagName === 'P' && el.textContent.includes('Редактирование недоступно')) {
-                el.remove();
-            } else if (el.classList.contains('confirm-btn') || el.classList.contains('cancel-btn') || el.classList.contains('edit-btn')) {
-                el.remove();
-            }
-        });
+                if (el.tagName === 'P' && el.textContent.includes('Редактирование недоступно')) {
+                    el.remove();
+                } else if (el.classList.contains('confirm-btn') || el.classList.contains('cancel-btn') || el.classList.contains('edit-btn')) {
+                    el.remove();
+                }
+            });
 
         }
         else {
@@ -338,6 +338,31 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     autoCancelPastBookings();
+
+    document.addEventListener('click', async (e) => {
+        if (e.target.classList.contains('cancel-wait-btn')) {
+            const waitingId = e.target.dataset.id;
+            if (!confirm('Вы уверены, что хотите отказаться от листа ожидания?')) return;
+
+            try {
+                const res = await fetch(`/cancel-waiting/${waitingId}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    alert(data.message);
+                    e.target.closest('.booking-box').remove();
+                } else {
+                    alert(data.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Ошибка сервера');
+            }
+        }
+    });
+
 
 
 

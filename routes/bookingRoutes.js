@@ -1,5 +1,16 @@
 import express from 'express';
-import { getHallDetails, createBooking, addToWaitingList, updateStatusBookingConfirm, cancelBooking, autoCancelBookings, updateBooking, getBookingDetails, getHallBookingsByDate } from '../controllers/bookingController.js';
+import { 
+    getHallDetails, 
+    createBooking, 
+    addToWaitingList, 
+    updateStatusBookingConfirm, 
+    cancelBooking, 
+    autoCancelBookings, 
+    updateBooking, 
+    getBookingDetails, 
+    getHallBookingsByDate,
+    checkBookingAvailability 
+} from '../controllers/bookingController.js';
 import { requireAuth } from '../middleware/middleware.js';
 
 
@@ -10,6 +21,7 @@ const router = express.Router();
 router.get('/halls/:id', getHallDetails);
 router.post('/bookings', requireAuth, createBooking);
 router.get('/bookings/slots', getHallBookingsByDate);
+router.get("/bookings/check", checkBookingAvailability);
 
 router.post('/waiting-list', requireAuth, addToWaitingList);
 router.patch('/confirm-booking/:id', updateStatusBookingConfirm);

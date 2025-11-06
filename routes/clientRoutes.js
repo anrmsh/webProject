@@ -3,7 +3,8 @@ import {getProfilePage,
     getEditProfile,
     postEditProfile,
     getEditBooking,
-    postEditBooking
+    postEditBooking,
+    cancelWaiting
 } from '../controllers/clientController.js';
 import { authMiddleware, requireAuth } from '../middleware/middleware.js';
   
@@ -17,6 +18,8 @@ router.post('/edit-profile', requireAuth, postEditProfile);
 
 router.get('/edit-booking/:id', requireAuth, getEditBooking);
 router.post('/edit-booking/:id', requireAuth, postEditBooking);
+
+router.patch('/cancel-waiting/:id', authMiddleware, cancelWaiting);
        
 export default router;    
 

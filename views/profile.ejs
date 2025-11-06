@@ -37,7 +37,6 @@
 
     <!-- ======== MAIN CONTENT ======== -->
     <main>
-      
       <h2 class="heading">Профиль пользователя</h2>
 
       <% if (user) { %>
@@ -109,13 +108,13 @@
             let statusText = ''; 
             let statusColor = ''; 
             if (b.status === 'pending') { 
-              statusText ='Ожидает подтверждения';
-               statusColor = 'gray'; 
-              } else if (b.status === 'confirmed') { 
-                statusText = 'Подтверждено'; 
-                statusColor = 'green'; }
-          else if (b.status === 'cancelled') { 
-            statusText = 'Отменено';
+              statusText ='Ожидает подтверждения'; 
+              statusColor = 'gray'; } 
+              else if (b.status ==='confirmed') {
+                 statusText = 'Подтверждено'; 
+                 statusColor = 'green'; }
+          else if (b.status === 'cancelled') {
+             statusText = 'Отменено';
           statusColor = 'red'; } 
           else if (b.status === 'waiting_list') {
           statusText = 'Лист ожидания'; 
@@ -183,6 +182,50 @@
           <% }) %> <% } else { %>
           <p>У вас пока нет бронирований</p>
           <% } %>
+
+          <!-- new -->
+          <!-- Лист ожидания -->
+          <% if (waitingList && waitingList.length > 0) { %> <%
+          waitingList.forEach(function(w) { %>
+          <div
+            class="box booking-box"
+            data-status="waiting_list"
+            data-date="<%= w.date %>"
+            data-id="<%= w.waiting_id %>"
+            data-position="<%= w.position %>"
+          >
+            <div class="image">
+              <% if (w.banquetHall && w.banquetHall.image_path) { %>
+              <img
+                src="<%= w.banquetHall.image_path %>"
+                alt="<%= w.banquetHall.hall_name %>"
+              />
+              <% } else { %>
+              <img
+                src="https://via.placeholder.com/300x230.png?text=Banquet+Hall"
+                alt="Banquet Hall"
+              />
+              <% } %>
+            </div>
+            <div class="content">
+              <h3>
+                <%= w.banquetHall ? w.banquetHall.hall_name : 'Без названия' %>
+              </h3>
+              <p><strong>Желаемая дата:</strong> <%= w.date %></p>
+              <p><strong>Желаемое время:</strong> <%= w.start_time %></p>
+              <p><strong>Позиция в очереди:</strong> <%= w.position %></p>
+              <p>
+                <strong>Статус:</strong>
+                <span class="status-text">Лист ожидания</span>
+              </p>
+              <button class="cancel-wait-btn" data-id="<%= w.waiting_id %>">
+                Отказаться
+              </button>
+            </div>
+          </div>
+          <% }) %> <% } %>
+
+          <!-- new -->
         </div>
       </section>
       <% } else { %>

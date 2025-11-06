@@ -64,17 +64,28 @@
     <div class="modal" id="bookingModal">
       <div class="modal-content">
         <h3>Бронирование зала</h3>
+
+        <!-- Блок сообщений (inline) -->
+        <div id="formMessage" role="status" aria-live="polite" style="margin-bottom:6px; color:#b02a37;"></div>
+
         <form id="bookingForm" action="/bookings" method="POST">
           <input type="hidden" name="hall_id" value="<%= hall.hall_id %>" />
 
           <label>Дата</label>
           <input type="text" id="datePicker" name="date" required />
+          <!-- Показываем занятые слоты для выбранной даты -->
+          <div id="bookedSlotsContainer" style="margin:8px 0; display:none;">
+            <strong>Занятые слоты на выбранную дату:</strong>
+            <ul id="bookedSlotsList" class="booked-slots-list"></ul>
+          </div>
 
           <label>Время начала</label>
-          <input type="time" name="start_time" required />
+          <input type="time" name="start_time" id="startTime" required />
 
           <label>Время окончания</label>
-          <input type="time" name="end_time" required />
+          <input type="time" name="end_time" id="endTime" required />
+
+          
 
           <label>Количество гостей</label>
           <input
@@ -84,6 +95,20 @@
             max="<%= hall.capacity %>"
             required
           />
+
+          <label>Тип мероприятия</label>
+          <select id="eventType" name="event_type_id" required>
+            <option value="">-- Выберите тип --</option>
+            <% eventTypes.forEach(type => { %>
+              <option value="<%= type.event_type_id %>"><%= type.type_name %></option>
+            <% }) %>
+            
+          </select>
+
+          <div id="otherEventBlock" style="display:none; margin-top: 10px;">
+            <label>Уточните мероприятие</label>
+            <input type="text" id="otherEventName" name="other_event_name" placeholder="Например, помолвка" />
+          </div>
 
           <label>Выберите дополнительные услуги</label>
           <div id="servicesList">
@@ -96,9 +121,7 @@
                 name="services"
                 value="<%= service.service_id %>"
               />
-              <span
-                ><%= service.service_name %> (+<%= service.price %> BYN)</span
-              >
+              <span><%= service.service_name %> (+<%= service.price %> BYN)</span>
             </div>
             <% }) %>
           </div>
@@ -107,7 +130,12 @@
             Общая стоимость: <span id="totalPrice"><%= hall.price %></span> BYN
           </h4>
 
-          <button type="submit" class="btn">Оформить бронирование</button>
+          <div style="display:flex; gap:8px; justify-content:center; margin-top:10px;">
+            <button type="submit" class="btn" id="bookNowBtn">Оформить бронирование</button>
+            <button type="button" class="btn btn-secondary" id="waitListBtn" style="display:none;">
+              Добавить в лист ожидания
+            </button>
+          </div>
         </form>
       </div>
     </div>
@@ -129,11 +157,23 @@
       </div>
     </section>
 
+
+    <!-- Модальное окно подтверждения -->
+<div class="modal" id="successModal">
+  <div class="modal-content success">
+    <div class="modal-icon"><i class="fa-solid fa-circle-check"></i></div>
+    <h3>Бронирование успешно!</h3>
+    <p id="successMessageText">Ваше бронирование создано. Спасибо!</p>
+    <button id="closeSuccessBtn" class="btn">OK</button>
+  </div>
+</div>
+
+
     <script>
       window.__INITIAL_DATA__ = {
         hall: <%- JSON.stringify(hall) %>,
         services: <%- JSON.stringify(services) %>,
-        disabledDates: <%- JSON.stringify(disabledDates) %>
+        disabledDates: <%- JSON.stringify(disabledDates) %> // используется только для подсветки дат с хотя бы одной бронью
       };
     </script>
     <script src="/script/hallCardScript.js"></script>

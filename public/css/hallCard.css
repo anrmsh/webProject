@@ -33,7 +33,6 @@ body {
   height: 400px;
   border-radius: 10px;
   object-fit: cover;
-  overflow: hidden;
 }
 
 .hall-info {
@@ -61,11 +60,11 @@ body {
   margin-top: 1rem;
   background: var(--pink);
   color: #fff;
-  padding: 0.9rem 3rem;
+  padding: 0.9rem 2rem;
   border: none;
   border-radius: 50px;
   cursor: pointer;
-  font-size: 1.6rem;
+  font-size: 1.2rem;
   transition: background 0.2s;
 }
 
@@ -73,6 +72,14 @@ body {
   background: #92294f;
 }
 
+.btn.disabled,
+.btn[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: #b07b88;
+}
+
+/* второстепенная кнопка */
 .btn-secondary {
   background: #888;
 }
@@ -81,15 +88,15 @@ body {
   background: #555;
 }
 
-.additional-info{
-    margin-top: 10px;
-    font-size: 25px;
+.additional-info {
+  margin-top: 10px;
+  font-size: 20px;
 }
 
-.additional-info p{
-    margin-bottom: 5px;
-    justify-content: space-around;
+.additional-info p {
+  margin-bottom: 6px;
 }
+
 /* ---------------- Модальное окно ---------------- */
 .modal {
   display: none;
@@ -105,7 +112,7 @@ body {
   background: #fff;
   padding: 30px;
   border-radius: 10px;
-  width: 450px;
+  width: 520px;
   max-width: 95%;
   box-shadow: var(--shadow);
 }
@@ -121,7 +128,8 @@ body {
   font-weight: bold;
 }
 
-.modal-content input {
+.modal-content input,
+.modal-content select {
   width: 100%;
   padding: 8px;
   margin-top: 5px;
@@ -129,11 +137,52 @@ body {
   border-radius: 5px;
 }
 
+.service-item {
+  display: flex;
+  align-items: center;
+  margin: 6px 0;
+  gap: 8px;
+}
+
+.service-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
 .total-text {
   text-align: center;
   margin-top: 1em;
-  font-size: 1.8rem;
+  font-size: 1.2rem;
   color: var(--pink);
+}
+
+/* ---------------- Занятые даты ---------------- */
+/* дата с хотя бы одной бронью (частично занята) */
+.flatpickr-day.partially-booked {
+  background: linear-gradient(135deg, #f3d6dc 0%, #e9e9e9 100%) !important;
+  color: #7a2b3b !important;
+  border-radius: 50%;
+}
+
+/* полностью занятую дату (на будущее) — стиль если нужно
+.flatpickr-day.fully-booked {
+  background: #bdbdbd !important;
+  color: #333 !important;
+}
+*/
+
+/* ---------------- Список занятых слотов ---------------- */
+.booked-slots-list {
+  margin: 6px 0 0 0;
+  padding-left: 18px;
+  color: #444;
+  font-size: 0.95rem;
+}
+
+.booked-slots-item {
+  margin-bottom: 4px;
+  color: #b02a37;
 }
 
 /* ---------------- Рекомендации ---------------- */
@@ -143,8 +192,8 @@ body {
   text-align: center;
 }
 
-.recommendations h2{
-    font-size: 40px;
+.recommendations h2 {
+  font-size: 40px;
 }
 
 .recommendation-list {
@@ -158,19 +207,12 @@ body {
   background: #fff;
   border-radius: 10px;
   box-shadow: var(--shadow);
-  /* max-width: 280px; */
   width: 250px;
   overflow: hidden;
-
-
-
-
-
-  flex-direction: column;
 }
 
-.recommendation-card:hover{
-    transform: scale(1.03);
+.recommendation-card:hover {
+  transform: scale(1.03);
 }
 
 .recommendation-card img {
@@ -180,15 +222,10 @@ body {
 }
 
 .rec-info {
-  padding: 10px;
-
-
-
-
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* распределяем пространство */
-  height: 150px; /* фиксируем высоту блока с текстом */
+  justify-content: space-between;
+  height: 150px;
   padding: 10px;
 }
 
@@ -198,14 +235,46 @@ body {
 }
 
 .rec-info p {
-  font-size: 1.7rem;
+  font-size: 1.2rem;
   color: #444;
 }
 
-
-
-
-
 .rec-info .btn {
-  align-self: center; /* выравниваем кнопку по левому краю */
+  align-self: center;
+}
+
+
+/* Модалка успеха */
+#successModal {
+  display: none;
+  position: fixed;
+  z-index: 2000;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+}
+
+#successModal .modal-content.success {
+  background: #fff;
+  padding: 30px 40px;
+  border-radius: 16px;
+  text-align: center;
+  max-width: 400px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  animation: fadeIn 0.3s ease;
+}
+
+#successModal .modal-icon {
+  font-size: 50px;
+  color: #1f7a1f;
+  margin-bottom: 10px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
 }

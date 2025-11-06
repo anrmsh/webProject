@@ -1,4 +1,4 @@
-import { BanquetHall, Booking, Client, User } from '../models/index.js';
+import { BanquetHall, Booking, Client, User, WaitingList } from '../models/index.js';
 import bcrypt from 'bcrypt';
 
 import dayjs from 'dayjs';
@@ -10,9 +10,6 @@ export const getProfilePage = async (req, res) => {
         const user = await User.findOne({
             where: { user_id: req.user.user_id }
         })
-
-        // Получаем клиента, связанного с пользователем
-
 
         const client = await Client.findOne({ where: { user_id: req.user.user_id } });
         if (!client) return res.send('Клиент не найден');
@@ -37,7 +34,24 @@ export const getProfilePage = async (req, res) => {
                 daysToEvent
 
             }
-        })
+        });
+
+        const waitingListItems = await WaitingList.findAll({
+            where: { client_id: client.client_id },
+            include: [{ model: BanquetHall }],
+            order: [['queue_position', 'ASC']]
+        });
+
+        const waitingListFormatted = waitingListItems.map(w => ({
+            ...w.toJSON(),
+            status: 'waiting_list',
+            position: w.queue_position,
+            date: w.desired_date,
+            start_time: w.start_time,
+            end_time:  w.end_time,
+            guest_count: null,
+            editable: true
+        }));
 
         // Формируем уведомления
         const notifications = bookings.flatMap(booking => {
@@ -63,7 +77,13 @@ export const getProfilePage = async (req, res) => {
         // Передаем обе переменные в EJS
         console.log('Client:', client);
         console.log(req.user.user_id);
-        res.render('profile', { user, client, bookings: bookingsWithEditable, notifications });
+        res.render('profile', {
+            user,
+            client,
+            bookings: bookingsWithEditable,
+            waitingList: waitingListFormatted,
+            notifications
+        });
     } catch (err) {
         console.error(err);
         res.status(500).send('Ошибка сервера' + err);
@@ -81,7 +101,7 @@ export const getEditProfile = async (req, res) => {
 
         const client = await Client.findOne({
             where: { user_id: req.user.user_id },
-            include:[User]
+            include: [User]
         });
         res.render('p_user/editProfile', { client });
     } catch (err) {
@@ -194,3 +214,25 @@ export const postEditBooking = async (req, res) => {
         res.status(500).send('Ошибка сервера');
     }
 };
+
+
+export const cancelWaiting = async (req, res) => {
+    try {
+        const  waitingId  = req.params.id;
+        const waitingItem = await WaitingList.findByPk(waitingId);
+
+        if (!waitingItem) {
+            return res.status(404).json({
+                message: 'Запись не найдена'
+            });
+        }
+
+        await waitingItem.destroy();
+        res.json({
+            message: 'Вы успешно отказались от листа ожидания'
+        })
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Ошибка сервера' });
+    }
+}
