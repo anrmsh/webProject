@@ -31,7 +31,8 @@ export const getProfilePage = async (req, res) => {
                 ...b.toJSON(),
                 editable: daysToEvent > 7,
                 confirmable: daysToEvent <= 7 && daysToEvent >= 0 && b.status === 'pending',
-                daysToEvent
+                daysToEvent,
+                from_waiting_list: b.from_waiting_list
 
             }
         });
@@ -70,6 +71,10 @@ export const getProfilePage = async (req, res) => {
 
             if (confirmDate.diff(today, 'day') <= 7 && confirmDate.diff(today, 'day') > 0 && booking.status === 'pending') {
                 notif.push(`Подтвердите бронирование "${booking.banquetHall.hall_name}" ${booking.date} за 7 дней до мероприятия`);
+            }
+
+            if(booking.from_waiting_list){
+                notif.push(`Ваша бронь на "${booking.banquetHall.hall_name}" ${booking.date} была подтверждена из листа ожидания!`);
             }
             return notif;
         });

@@ -107,20 +107,21 @@
           <%bookings.forEach(function(b) { 
             let statusText = ''; 
             let statusColor = ''; 
-            if (b.status === 'pending') { 
-              statusText ='Ожидает подтверждения'; 
-              statusColor = 'gray'; } 
-              else if (b.status ==='confirmed') {
-                 statusText = 'Подтверждено'; 
-                 statusColor = 'green'; }
-          else if (b.status === 'cancelled') {
-             statusText = 'Отменено';
+          if (b.status === 'pending') { 
+            statusText ='Ожидает подтверждения'; 
+          statusColor = 'gray'; } 
+          else if (b.status ==='confirmed') { 
+            statusText = 'Подтверждено'; statusColor = 'green';
+          } else if (b.status === 'cancelled') { 
+            statusText = 'Отменено';
           statusColor = 'red'; } 
           else if (b.status === 'waiting_list') {
           statusText = 'Лист ожидания'; 
-          statusColor = 'gray'; } else if
+          statusColor = 'gray'; } 
+          else if
           (b.status === 'waiting_confirmation') { 
-            statusText = 'Ждут подтверждения'; statusColor = 'orange'; } %>
+            statusText = 'Ждут подтверждения';
+           statusColor = 'orange'; } %>
 
           <div
             class="box booking-box"
@@ -159,12 +160,15 @@
                 <strong>Статус:</strong>
                 <span class="status-text"><%= statusText %></span>
               </p>
-
-              <% if (b.confirmable) { %>
+              <% if (b.from_waiting_list) { %>
+              <p class="new-booking">
+                🌟 Новая бронь из листа ожидания — вы можете внести изменения
+              </p>
+              <% } %> <% if (b.confirmable) { %>
               <button class="confirm-btn" data-id="<%= b.booking_id %>">
                 Подтвердить
               </button>
-              <% } %> <% if (b.editable) { %>
+              <% } %> <% if (b.editable && b.status !== 'cancelled') { %>
               <a href="/edit-booking/<%= b.booking_id %>" class="btn"
                 >Изменить</a
               >

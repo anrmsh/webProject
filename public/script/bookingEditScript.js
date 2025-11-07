@@ -1,7 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // ==============================
-    // 🔹 Переменные и данные
-    // ==============================
     let hallBookings = window.hallBookings || [];
     const booking = window.currentBooking || {};
 
@@ -9,48 +6,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const endSelect = document.getElementById('endTime');
     const datePicker = document.getElementById('datePicker');
     const hallId = document.querySelector('input[name="hall_id"]').value;
-
-    // ==============================
-    // 🔹 Генерация списка времени
-    // ==============================
-    function timeToStr(h, m) {
-        return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
-    }
+    const messageBox = document.getElementById('timeErrorMsg');
 
     const slots = [];
     for (let h = 8; h < 24; h++) {
-        slots.push(timeToStr(h, 0));
-        slots.push(timeToStr(h, 15));
-        slots.push(timeToStr(h, 30));
-        slots.push(timeToStr(h, 45));
+        [0, 15, 30, 45].forEach(m => slots.push(`${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}`));
     }
 
-    // ==============================
-    // 🔹 Проверка: занято ли время
-    // ==============================
-    function normalizeTime(t) {
-        return t.length > 5 ? t.slice(0, 5) : t;
+    function timeToMinutes(time) {
+        const [h,m] = time.split(':').map(Number);
+        return h*60 + m;
     }
 
     function isSlotBusy(time, selectedDate) {
-        if (!selectedDate) return false;
-
-        // выбираем только брони на выбранную дату
-        const bookingsForDate = hallBookings.filter(
-            (b) => b.date.split('T')[0] === selectedDate
-        );
-
-        return bookingsForDate.some((b) => {
-            if (b.booking_id === booking.booking_id) return false; // игнорируем текущую бронь
-            const start = normalizeTime(b.start_time);
-            const end = normalizeTime(b.end_time);
-            return time >= start && time < end;
+        const tMinutes = timeToMinutes(time);
+        return hallBookings.some(b => {
+            if (b.booking_id === booking.booking_id) return false;
+            if (b.date.split('T')[0] !== selectedDate) return false;
+            const start = timeToMinutes(b.start_time);
+            const end = timeToMinutes(b.end_time);
+            return tMinutes >= start && tMinutes < end;
         });
     }
 
-    // ==============================
-    // 🔹 Перестройка списков времени
-    // ==============================
     function updateTimeOptions() {
         const selectedDate = datePicker.value;
         if (!selectedDate) return;
@@ -58,136 +36,97 @@ document.addEventListener('DOMContentLoaded', () => {
         startSelect.innerHTML = '';
         endSelect.innerHTML = '';
 
-        slots.forEach((time) => {
-            // --- начало ---
+        slots.forEach(time => {
+            // Начало
             const startOption = document.createElement('option');
             startOption.value = time;
             startOption.textContent = time;
-
-            if (isSlotBusy(time, selectedDate) && time !== booking.start_time) {
+            if (isSlotBusy(time, selectedDate) && time !== booking.start_time.slice(0,5)) {
                 startOption.disabled = true;
                 startOption.style.color = 'gray';
             }
-            if (normalizeTime(time) === normalizeTime(booking.start_time)) startOption.selected = true;
+            if (time === booking.start_time.slice(0,5)) startOption.selected = true;
             startSelect.appendChild(startOption);
 
-            // --- конец ---
+            // Конец
             const endOption = document.createElement('option');
             endOption.value = time;
             endOption.textContent = time;
-
-            if (isSlotBusy(time, selectedDate) && time !== booking.end_time) {
+            if (isSlotBusy(time, selectedDate) && time !== booking.end_time.slice(0,5)) {
                 endOption.disabled = true;
                 endOption.style.color = 'gray';
             }
-            if (normalizeTime(time) === normalizeTime(booking.end_time)) endOption.selected = true;
+            if (time === booking.end_time.slice(0,5)) endOption.selected = true;
             endSelect.appendChild(endOption);
         });
 
         validateSelectedTime();
     }
 
-    // ==============================
-    // 🔹 Проверка выбранного времени
-    // ==============================
     function validateSelectedTime() {
-        const selectedDate = datePicker.value;
-        const startValue = startSelect.value;
-        const endValue = endSelect.value;
+        const start = startSelect.value;
+        const end = endSelect.value;
+        const date = datePicker.value;
 
-        if (!selectedDate || !startValue || !endValue) return;
+        if (!start || !end || !date) {
+            messageBox.textContent = '';
+            return;
+        }
 
-        const startBusy = isSlotBusy(startValue, selectedDate);
-        const endBusy = isSlotBusy(endValue, selectedDate);
+        const startBusy = isSlotBusy(start, date);
+        const endBusy = isSlotBusy(end, date);
 
-        if (startBusy || endBusy) {
-            alert('Вы выбрали время, которое уже занято. Пожалуйста, выберите другое.');
-            updateTimeOptions();
+        if (startBusy || endBusy || timeToMinutes(end) <= timeToMinutes(start)) {
+            messageBox.textContent = 'Вы выбрали неправильное или занятое время.';
+            startSelect.classList.add('error');
+            endSelect.classList.add('error');
+        } else {
+            messageBox.textContent = '';
+            startSelect.classList.remove('error');
+            endSelect.classList.remove('error');
         }
     }
 
-    // ==============================
-    // 🔹 При смене даты
-    // ==============================
     datePicker.addEventListener('change', async () => {
-        const selectedDate = datePicker.value;
+        const date = datePicker.value;
         try {
-            const res = await fetch(
-                `/bookings/slots?hall_id=${hallId}&date=${selectedDate}&booking_id=${booking.booking_id}`
-            );
-            if (!res.ok) throw new Error('Ошибка загрузки');
-            const updatedBookings = await res.json();
-            hallBookings = updatedBookings;
+            const res = await fetch(`/bookings/slots?hall_id=${hallId}&date=${date}`);
+            const data = await res.json();
+            hallBookings = data.slots || [];
             updateTimeOptions();
-        } catch (err) {
-            console.error('Ошибка загрузки броней:', err);
-        }
+        } catch(err) { console.error(err); }
     });
 
-    // ==============================
-    // 🔹 При смене времени
-    // ==============================
     startSelect.addEventListener('change', () => {
-        const startValue = startSelect.value;
-        const selectedDate = datePicker.value;
-
-        Array.from(endSelect.options).forEach((opt) => {
-            if (opt.value <= startValue && opt.value !== booking.end_time) {
+        const startMinutes = timeToMinutes(startSelect.value);
+        Array.from(endSelect.options).forEach(opt => {
+            if (timeToMinutes(opt.value) <= startMinutes && opt.value !== booking.end_time.slice(0,5)) {
                 opt.disabled = true;
                 opt.style.color = 'gray';
-            } else if (!isSlotBusy(opt.value, selectedDate)) {
+            } else if (!isSlotBusy(opt.value, datePicker.value)) {
                 opt.disabled = false;
                 opt.style.color = '';
             }
         });
-
         validateSelectedTime();
     });
 
     endSelect.addEventListener('change', validateSelectedTime);
 
-    // ==============================
-    // 🔹 Пересчёт общей стоимости
-    // ==============================
+    // Расчет суммы с услугами
     const serviceCheckboxes = document.querySelectorAll('.service-checkbox');
     const totalText = document.getElementById('totalPrice');
-    const hallPriceInput = document.getElementById('hallPrice');
-
-    let basePrice = 0;
-    if (hallPriceInput) {
-        basePrice = parseFloat(hallPriceInput.value);
-    } else if (window.currentBooking && window.currentBooking.BanquetHall) {
-        basePrice = parseFloat(window.currentBooking.BanquetHall.price);
-    }
+    const hallPrice = parseFloat(document.getElementById('hallPrice').value);
 
     function updateTotal() {
-        let total = basePrice;
-        serviceCheckboxes.forEach((cb) => {
-            if (cb.checked) total += parseFloat(cb.dataset.price);
+        let total = hallPrice;
+        serviceCheckboxes.forEach(cb => {
+            if(cb.checked) total += parseFloat(cb.dataset.price);
         });
         totalText.textContent = total.toFixed(2);
     }
-
-    serviceCheckboxes.forEach((cb) => cb.addEventListener('change', updateTotal));
+    serviceCheckboxes.forEach(cb => cb.addEventListener('change', updateTotal));
     updateTotal();
 
-    // ==============================
-    // 🔹 Первичная инициализация
-    // ==============================
     updateTimeOptions();
-    restoreSelectedTimes();
-
-
-    // После обновления списков времени всегда устанавливаем текущее время брони 
-    function restoreSelectedTimes() {
-        if (booking.start_time) {
-            startSelect.value = normalizeTime(booking.start_time);
-        }
-        if (booking.end_time) {
-            endSelect.value = normalizeTime(booking.end_time);
-        }
-    }
-
 });
-
-

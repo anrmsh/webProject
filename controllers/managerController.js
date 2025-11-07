@@ -1,5 +1,5 @@
 import { Sequelize } from "sequelize";
-import { BanquetHall, Booking, EventType, Rating, User, Client, Report } from "../models/index.js";
+import { BanquetHall, Booking, EventType, Rating, User, Client, Report, WaitingList } from "../models/index.js";
 const { Op, fn, col, literal } = Sequelize;
 import ExcelJS from "exceljs";
 
@@ -560,6 +560,321 @@ export const exportReportExcel = async (req, res) => {
         res.status(500).json({ message: "Ошибка при экспорте отчёта" });
     }
 };
+
+
+// новое лист ожидания
+export const getWaitingListPage = async (req, res) => {
+    // try {
+    //     const halls = await BanquetHall.findAll({
+    //         where: { manager_id: req.user.user_id }
+    //     });
+
+    //     // Загружаем все активные записи в листе ожидания (для предпросмотра)
+    //     const waitingList = await WaitingList.findAll({
+    //         include: [
+    //             { model: Client },
+    //             { model: BanquetHall, attributes: ["hall_name"] }
+    //         ],
+    //         where: {},
+    //         order: [
+    //             ["desired_date", "ASC"],
+    //             ["start_time", "ASC"]
+    //         ]
+    //     });
+
+    //     res.render("p_manager/waitingList", { halls, waitingList });
+    // } catch (err) {
+    //     console.error(err);
+    //     res.status(500).send("Ошибка загрузки страницы");
+    // }
+    try {
+        const halls = await BanquetHall.findAll({
+            where: { manager_id: req.user.user_id }
+        });
+
+        // При рендере можно передать пустой waitingList — фронт сам подгрузит полный список по залу
+        res.render("p_manager/waitingList", { halls, waitingList: [] });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Ошибка загрузки страницы");
+    }
+};
+
+// === API: получить расписание и лист ожидания ===
+export const getScheduleData = async (req, res) => {
+    try {
+        const { hall_id, date } = req.query;
+        if (!hall_id || !date) return res.status(400).json({ message: "Нужны hall_id и date" });
+
+        const bookings = await Booking.findAll({
+            where: { hall_id, date },
+            include: [
+                {
+                    model: Client,
+                    include: [{ model: User, attributes: ["first_name", "last_name"] }]
+                }
+            ],
+            order: [["start_time", "ASC"]],
+        });
+
+        res.json({
+            bookings: bookings.map(b => ({
+                booking_id: b.booking_id,
+                start_time: b.start_time,
+                end_time: b.end_time,
+                status: b.status,
+                date:date,
+                client_name: b.client && b.client.user
+                    ? `${b.client.user.first_name} ${b.client.user.last_name}`
+                    : "Без имени"
+            }))
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Ошибка загрузки расписания" });
+    }
+};
+
+// --- API: получить весь лист ожидания по залу (всегда весь, отсортирован по дате/времени/позиции) ---
+export const getWaitingListForHall = async (req, res) => {
+    try {
+        const { hall_id } = req.query;
+        if (!hall_id) return res.status(400).json({ message: "Нужен hall_id" });
+
+        const waiting = await WaitingList.findAll({
+            where: { hall_id },
+            include: [
+                {
+                    model: Client,
+                    include: [{ model: User, attributes: ["first_name", "last_name"] }]
+                }
+            ],
+            order: [
+                ["desired_date", "ASC"],
+                ["start_time", "ASC"],
+                ["queue_position", "ASC"]
+            ]
+        });
+
+        res.json({
+            waiting: waiting.map(w => ({
+                waiting_id: w.waiting_id,
+                client_id: w.client_id,
+                desired_date: w.desired_date,
+                start_time: w.start_time,
+                end_time: w.end_time,
+                queue_position: w.queue_position,
+                client_name: w.client && w.client.user
+                    ? `${w.client.user.first_name} ${w.client.user.last_name}`
+                    : "Без имени",
+            }))
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Ошибка загрузки листа ожидания" });
+    }
+};
+
+// === API: назначить клиента из листа ожидания ===
+export const assignFromWaiting = async (req, res) => {
+    // try {
+    //     const waiting = await WaitingList.findByPk(req.params.id);
+    //     if (!waiting) return res.status(404).json({ message: "Запись не найдена" });
+
+    //     // Создаём новую бронь
+    //     await Booking.create({
+    //         client_id: waiting.client_id,
+    //         hall_id: waiting.hall_id,
+    //         date: waiting.desired_date,
+    //         start_time: waiting.start_time,
+    //         end_time: waiting.end_time || "23:00:00", // если нет — ставим конец дня
+    //         status: "pending",
+    //         payment_status: "unpaid",
+    //         guest_count: 0,
+    //     });
+
+    //     const { hall_id, desired_date, queue_position } = waiting;
+
+    //     // Удаляем выбранную запись
+    //     await waiting.destroy();
+
+    //     // Сдвигаем позиции оставшихся записей вверх
+    //     await WaitingList.increment(
+    //         { queue_position: -1 },
+    //         {
+    //             where: {
+    //                 hall_id,
+    //                 desired_date,
+    //                 queue_position: { [Op.gt]: queue_position },
+    //             },
+    //         }
+    //     );
+
+    //     res.json({ message: "Клиент назначен на освободившееся время" });
+    // } catch (err) {
+    //     console.error(err);
+    //     res.status(500).json({ message: "Ошибка назначения" });
+    // }
+    try {
+        const waitingId = req.params.id;
+        const { targetBookingId } = req.body || {};
+
+        const waiting = await WaitingList.findByPk(waitingId);
+        if (!waiting) return res.status(404).json({ message: "Запись листа ожидания не найдена" });
+
+        const hall_id = waiting.hall_id;
+        const date = waiting.desired_date;
+        const start = waiting.start_time;
+        const end = waiting.end_time;
+
+        // Проверка пересечения: найти любую бронь на тот же зал/дату, у которой time overlap и которая НЕ является целевой (если передали)
+        const overlapWhere = {
+            hall_id,
+            date,
+            [Op.and]: [
+                {
+                    // start_a < end_b && end_a > start_b  => overlap
+                    start_time: { [Op.lt]: end }
+                },
+                {
+                    end_time: { [Op.gt]: start }
+                }
+            ]
+        };
+        if (targetBookingId) {
+            overlapWhere.booking_id = { [Op.ne]: targetBookingId };
+        }
+
+        const conflicting = await Booking.findOne({
+            where: overlapWhere
+        });
+
+        if (conflicting) {
+            return res.status(409).json({ message: "Время пересекается с существующей бронью" });
+        }
+
+        // Если передан targetBookingId — обновляем её (переназначаем)
+        if (targetBookingId) {
+            const target = await Booking.findByPk(targetBookingId);
+            if (!target) return res.status(404).json({ message: "Целевая бронь не найдена" });
+
+            await target.update({
+                client_id: waiting.client_id,
+                date,
+                start_time: start,
+                end_time: end,
+                status: "pending",
+                payment_status: "unpaid"
+            });
+
+            // удаляем запись из листа ожидания
+            const { queue_position } = waiting;
+            await waiting.destroy();
+
+            // подвинуть очередь для тех, кто был после
+            await WaitingList.increment(
+                { queue_position: -1 },
+                {
+                    where: {
+                        hall_id,
+                        desired_date: date,
+                        queue_position: { [Op.gt]: queue_position }
+                    }
+                }
+            );
+
+            return res.json({ message: "Назначено: целевая бронь обновлена" });
+        }
+
+        // Иначе — создаём новую бронь
+        await Booking.create({
+            client_id: waiting.client_id,
+            hall_id,
+            date,
+            start_time: start,
+            end_time: end,
+            status: "pending",
+            payment_status: "unpaid",
+            from_waiting_list:true,
+            guest_count: 0
+        });
+
+        const { queue_position } = waiting;
+        await waiting.destroy();
+        await WaitingList.increment(
+            { queue_position: -1 },
+            {
+                where: {
+                    hall_id,
+                    desired_date: date,
+                    queue_position: { [Op.gt]: queue_position }
+                }
+            }
+        );
+
+        return res.json({ message: "Клиент назначен и запись из листа удалена" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Ошибка назначения из листа ожидания" });
+    }
+};
+
+
+// === API: получить доступные заявки из листа ожидания (без пересечений) ===
+export const getAvailableWaitingForBooking = async (req, res) => {
+  try {
+    const { hall_id, date } = req.query;
+    if (!hall_id || !date)
+      return res.status(400).json({ message: "Нужны hall_id и date" });
+
+    // Загружаем все активные брони на дату
+    const bookings = await Booking.findAll({
+      where: { hall_id, date },
+      attributes: ["start_time", "end_time"],
+    });
+
+    // Загружаем все заявки из листа ожидания
+    const waitingList = await WaitingList.findAll({
+      where: { hall_id, desired_date: date },
+      include: [
+        {
+          model: Client,
+          include: [{ model: User, attributes: ["first_name", "last_name"] }],
+        },
+      ],
+      order: [["queue_position", "ASC"]],
+    });
+
+    // Проверка пересечений
+    const available = waitingList.filter((w) => {
+      const wStart = w.start_time;
+      const wEnd = w.end_time;
+      const hasConflict = bookings.some(
+        (b) => wStart < b.end_time && wEnd > b.start_time
+      );
+      return !hasConflict;
+    });
+
+    res.json({
+      waiting: available.map((w) => ({
+        waiting_id: w.waiting_id,
+        desired_date: w.desired_date,
+        start_time: w.start_time,
+        end_time: w.end_time,
+        queue_position: w.queue_position,
+        client_name:
+          w.Client && w.Client.User
+            ? `${w.Client.User.first_name} ${w.Client.User.last_name}`
+            : "Без имени",
+      })),
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Ошибка загрузки доступных заявок" });
+  }
+};
+
+
 
 
 

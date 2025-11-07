@@ -53,33 +53,16 @@ export const createBooking = async (req, res) => {
             where: {
                 hall_id,
                 date,
-                 [Op.and]: [
-            // Проверяем, что новый интервал **пересекается** с существующим
-            {
-                start_time: { [Op.lt]: end_time } // существующая бронь начинается **до** конца нового интервала
-            },
-            {
-                end_time: { [Op.gt]: start_time } // существующая бронь заканчивается **после** начала нового интервала
-            }
-        ]
-                // [Op.or]: [
-                //     { start_time: { [Op.between]: [start_time, end_time] } },
-                //     { end_time: { [Op.between]: [start_time, end_time] } },
-                //     // Новый слот полностью покрывает существующий
-                //     {
-                //         [Op.and]: [
-                //             { start_time: { [Op.lte]: start_time } },
-                //             { end_time: { [Op.gte]: end_time } }
-                //         ]
-                //     },
-                //     // Существующий слот полностью покрывает новый
-                //     {
-                //         [Op.and]: [
-                //             { start_time: { [Op.gte]: start_time } },
-                //             { end_time: { [Op.lte]: end_time } }
-                //         ]
-                //     }
-                // ]
+                [Op.and]: [
+                    {
+                        start_time: { [Op.lt]: end_time }
+                    },
+                    {
+                        end_time: { [Op.gt]: start_time }
+                    }
+                ],
+
+
             }
         });
 
@@ -107,7 +90,6 @@ export const createBooking = async (req, res) => {
             if (!isNaN(maybeId)) eventTypeValue = maybeId;
         }
 
-
         await Booking.create({
             client_id: client.client_id,
             hall_id,
@@ -120,28 +102,13 @@ export const createBooking = async (req, res) => {
             event_type_id: eventTypeValue,
         });
 
-
-        // res.render('message', {
-        //     title: 'Успех',
-        //     message: 'Бронирование успешно создано!',
-        //     link: '/halls/' + hall_id
-        // });
         res.json({
             success: true,
             message: 'Бронирование успешно создано!',
         });
     } catch (err) {
         console.error(err);
-        // res.status(500).json({
-        //     success: false,
-        //     message: 'Ошибка при бронировании'
-        // })
 
-        // res.render('message', {
-        //     title: 'Ошибка',
-        //     message: 'Произошла ошибка при бронировании',
-        //     link: '/halls'
-        // });
         res.status(500).json({
             success: false,
             message: 'Ошибка при создании бронирования',
@@ -227,17 +194,16 @@ export async function cancelBooking(req, res) {
     }
 }
 
-// ✅ Автоматическая отмена за 1 день до мероприятия
 export async function autoCancelBookings(req, res) {
     try {
-        // Найдём все неподтверждённые брони, у которых дата сегодня или завтра
+
         const [affectedCount] = await Booking.update(
             { status: 'cancelled' },
             {
                 where: {
                     status: 'pending',
                     date: {
-                        [Op.lte]: new Date(new Date().setDate(new Date().getDate() + 1)) // сегодня или завтра
+                        [Op.lte]: new Date(new Date().setDate(new Date().getDate() + 1))
                     }
                 }
             }
@@ -329,6 +295,8 @@ export const updateBooking = async (req, res) => {
             }
         });
 
+
+
         if (conflict) {
             return res.render('message', {
                 title: 'Ошибка',
@@ -354,6 +322,7 @@ export const updateBooking = async (req, res) => {
         }
         console.log(total);
         booking.payment_amount = total;
+        booking.from_waiting_list = false;
 
         await booking.save();
 
@@ -373,26 +342,6 @@ export const updateBooking = async (req, res) => {
     }
 }
 
-// export const getHallBookingsByDate = async (req, res) => {
-//     try {
-//         const { hall_id, date, booking_id } = req.query;
-
-//         const hallBookings = await Booking.findAll({
-//             where: {
-//                 hall_id,
-//                 date,
-//                 status: { [Op.ne]: 'cancelled' },
-//                 booking_id: { [Op.ne]: booking_id }
-//             },
-//             attributes: ['date', 'start_time', 'end_time']
-//         });
-
-//         res.json(hallBookings);
-//     } catch (err) {
-//         console.error(err);
-//         res.status(500).json({ error: 'Ошибка загрузки бронирований' });
-//     }
-// };
 
 export const getHallBookingsByDate = async (req, res) => {
     try {
