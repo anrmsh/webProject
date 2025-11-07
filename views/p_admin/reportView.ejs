@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Просмотр отчёта</title>
+  <link rel="stylesheet" href="/css/p_admin/reports.css">
+</head>
+<body>
+<header>
+  <a href="/admin/reports" class="back-btn"><i class="fa fa-arrow-left"></i> Назад</a>
+  <h1>Отчёт за период <%= report.period_start %> — <%= report.period_end %></h1>
+</header>
+
+<section class="report-data">
+  <table class="reports-table">
+    <thead>
+      <tr>
+        <th>Зал</th>
+        <th>Бронирований</th>
+        <th>Проведено</th>
+        <th>Выручка (BYN)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% data.forEach(d => { %>
+        <tr>
+          <td><%= d.hall_name %></td>
+          <td><%= d.bookings_count %></td>
+          <td><%= d.completed_count %></td>
+          <td><%= d.revenue_sum %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</section>
+</body>
+</html>

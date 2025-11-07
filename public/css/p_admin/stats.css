@@ -108,3 +108,28 @@ header h1 {
   color: var(--pink);
 }
 
+.reports-link {
+  grid-column: 1 / -1; /* занимает всю ширину сетки */
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.btn-view-reports {
+  display: inline-block;
+  background: #ae3962;
+  color: #fff;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.btn-view-reports:hover {
+  background: #902e53;
+  transform: translateY(-2px);
+}
+
+.btn-view-reports i {
+  margin-right: 0.5rem;
+}

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Отчёты менеджеров</title>
+  <link rel="stylesheet" href="/css/admin.css">
+  <link rel="stylesheet" href="/css/p_admin/reports.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js"></script>
+</head>
+<body>
+<header>
+  <a href="/admin" class="back-btn"><i class="fa fa-arrow-left"></i> Назад</a>
+  <h1>Отчёты менеджеров</h1>
+</header>
+
+<section class="reports-section">
+  <table class="reports-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Менеджер</th>
+        <th>Период</th>
+        <th>Дата создания</th>
+        <th>Действия</th>
+      </tr>
+    </thead>
+    <tbody id="reportsTableBody">
+      <!-- динамически через JS -->
+    </tbody>
+  </table>
+</section>
+
+<script src="/script/p_admin/reports.js"></script>
+</body>
+</html>

@@ -1,4 +1,12 @@
-import { User, Role, BanquetHall, Booking, Rating, Client } from '../models/index.js';
+import {
+    User,
+    Role,
+    BanquetHall,
+    Booking,
+    Rating,
+    Client,
+    Report
+} from '../models/index.js';
 import bcrypt from "bcrypt";
 import { Op } from 'sequelize';
 
@@ -10,28 +18,28 @@ export const getAdminHonePage = async (req, res) => {
         const totalUsers = await User.count();
         const activeManagers = await User.count({ where: { role_id: 2, status: 'active' } });
         const totalBookings = await Booking.count({
-            where: {status: {[Op.not]:'canceled'}}
+            where: { status: { [Op.not]: 'canceled' } }
         });
-        const totalRevenue = await Booking.sum('payment_amount',{
-            where:{payment_status: 'paid'}
+        const totalRevenue = await Booking.sum('payment_amount', {
+            where: { payment_status: 'paid' }
         });
         const totalHalls = await BanquetHall.count({
-            where: {status: 'approved'}
+            where: { status: 'approved' }
         });
 
         const notifications = await BanquetHall.count({ where: { status: 'pending' } });
 
 
         res.render('p_admin/admin', {
-            adminName: user? (user.first_name + ' ' + user.last_name) : 'Администратор',
+            adminName: user ? (user.first_name + ' ' + user.last_name) : 'Администратор',
             totalUsers,
             totalHalls,
             activeManagers,
             totalBookings,
             totalRevenue: totalRevenue || 0,
             notifications: notifications,
-            currentDate: new Date().toLocaleDateString('ru-RU',{
-                 day: 'numeric', month: 'long', year: 'numeric'
+            currentDate: new Date().toLocaleDateString('ru-RU', {
+                day: 'numeric', month: 'long', year: 'numeric'
             })
         });
     } catch (err) {
@@ -465,5 +473,62 @@ export const getNotifications = async (req, res) => {
     } catch (error) {
         console.error("Ошибка при загрузке уведомлений:", error);
         res.status(500).send("Ошибка при загрузке уведомлений");
+    }
+};
+
+
+
+
+
+// newnewnew
+export const getReportsList = async (req, res) => {
+    try {
+        const reports = await Report.findAll({
+            include: [
+                {
+                    model: User,
+                    as: "manager",
+                    attributes: ["first_name", "last_name"],
+                },
+            ],
+            order: [["report_date", "DESC"]],
+        });
+
+        const formatted = reports.map((r) => ({
+            report_id: r.report_id,
+            manager_name: `${r.manager.last_name} ${r.manager.first_name}`,
+            period_start: r.period_start,
+            period_end: r.period_end,
+            report_date: r.report_date,
+        }));
+
+        res.json(formatted);
+    } catch (err) {
+        console.error("Ошибка загрузки отчётов:", err);
+        res.status(500).json({ message: "Ошибка загрузки отчётов" });
+    }
+};
+
+// === Просмотр конкретного отчёта ===
+export const getReportView = async (req, res) => {
+    try {
+        const report = await Report.findByPk(req.params.id, {
+            include: [{
+                model: User,
+                as: "manager",
+                attributes: [
+                    "first_name", "last_name"
+                ]
+            }],
+        });
+
+        if (!report) return res.status(404).send("Отчёт не найден");
+
+        const data = JSON.parse(report.report_data || "[]");
+
+        res.render("p_admin/reportView", { report, data });
+    } catch (err) {
+        console.error("Ошибка загрузки отчёта:", err);
+        res.status(500).send("Ошибка загрузки отчёта");
     }
 };

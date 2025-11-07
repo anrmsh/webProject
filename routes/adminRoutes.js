@@ -14,6 +14,9 @@ import {
     getMonthlyBookings,
     getDashboardData,
     getNotifications,
+    getReportsList,
+    getReportView
+
 } from '../controllers/adminController.js';
 import { authMiddleware } from "../middleware/middleware.js";
 
@@ -49,6 +52,13 @@ router.get('/admin/dashboard-data', getDashboardData);
 
 router.get('/admin/notifications', getNotifications);
 router.put('/admin/notifications/:hallId/status', updateHallStatus);
+
+
+router.get("/admin/reports", (req, res) => {
+  res.render("p_admin/reports"); 
+});
+router.get("/admin/reports/list", getReportsList);
+router.get("/admin/reports/view/:id", getReportView);
 
 
 
