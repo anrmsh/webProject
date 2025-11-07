@@ -305,13 +305,12 @@ export const updateBooking = async (req, res) => {
             });
         }
 
-        // booking.date = date;
+        
         booking.date = date;
         booking.start_time = start_time;
         booking.end_time = end_time;
         booking.guest_count = guest_count;
 
-        // Рассчёт суммы с учётом услуг
         let total = parseFloat(booking.banquetHall.price);
         if (Array.isArray(services)) {
             const selectedServices = services
@@ -356,10 +355,9 @@ export const getHallBookingsByDate = async (req, res) => {
             attributes: ["start_time", "end_time"],
         });
 
-        // проверим, закрывает ли бронь весь день (00:00–23:59)
         let fullDayBooked = false;
         if (hallBookings.length) {
-            // Сортируем интервалы
+
             const sorted = hallBookings
                 .map(b => [b.start_time, b.end_time])
                 .sort((a, b) => (a[0] < b[0] ? -1 : 1));
@@ -368,14 +366,14 @@ export const getHallBookingsByDate = async (req, res) => {
             for (let i = 1; i < sorted.length; i++) {
                 const last = merged[merged.length - 1];
                 if (sorted[i][0] <= last[1]) {
-                    // пересечение
+               
                     last[1] = last[1] > sorted[i][1] ? last[1] : sorted[i][1];
                 } else {
                     merged.push(sorted[i]);
                 }
             }
 
-            // если после слияния есть 1 интервал и он покрывает сутки
+          
             fullDayBooked = merged.some(([start, end]) => start <= "00:00" && end >= "23:59");
         }
 

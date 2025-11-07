@@ -10,7 +10,6 @@ import { authMiddleware, requireAuth } from '../middleware/middleware.js';
   
 const router = express.Router();
 
-//router.use(authMiddleware);
 router.get('/profile', authMiddleware, getProfilePage);
     
 router.get('/edit-profile', requireAuth, getEditProfile);

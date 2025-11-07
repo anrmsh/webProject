@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // === Модалка регистрации менеджера ===
+
     const modal = document.getElementById('managerModal');
     const openBtn = document.getElementById('openModalBtn');
     const closeBtn = document.getElementById('closeModal');
@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target === modal) modal.classList.remove('active');
     });
 
-    // === Создание менеджера ===
+
     document.getElementById('managerForm').addEventListener('submit', async e => {
         e.preventDefault();
         const formData = Object.fromEntries(new FormData(e.target).entries());
@@ -29,14 +29,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // === Цвета статусов ===
+
     document.querySelectorAll('.status-cell').forEach(td => {
         const text = td.textContent.trim();
         if (text === 'Активен') td.style.color = '#2ecc71';
         if (text === 'Заблокирован') td.style.color = '#e74c3c';
     });
 
-    // === Карточка пользователя ===
+
     const card = document.getElementById('userCard');
     const closeCard = document.getElementById('closeCard');
     const saveBtn = document.getElementById('saveChangesBtn');
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Закрытие карточки
+
     closeCard.addEventListener('click', () => {
         if (statusSelect.value !== originalStatus) {
             if (confirm('Сохранить изменения перед закрытием?')) {
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
  
-    // === Сохранение изменений статуса ===
+
     saveBtn.addEventListener('click', async () => {
         if (!currentUser) return;
         const newStatus = statusSelect.value;
@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 card.classList.remove('active');
                 location.reload();
             } else {
-                // Читаем тело ответа от сервера
+               
                 const errData = await res.json().catch(() => ({}));
                 alert(errData.error || 'Ошибка при обновлении статуса');
                 console.error(errData.err || 'Нет подробностей ошибки');
@@ -118,7 +118,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // === Удаление пользователя ===
     deleteBtn.addEventListener('click', async () => {
         const id = deleteBtn.dataset.id;
         if (!confirm('Действительно хотите удалить пользователя?')) return;
@@ -132,10 +131,6 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Ошибка при удалении');
         }
     });
-
-
-
-
 
     function decodeHTML(html) {
         const txt = document.createElement('textarea');

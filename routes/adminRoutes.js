@@ -22,19 +22,14 @@ import { authMiddleware } from "../middleware/middleware.js";
 
 const router = express.Router();
 
-// Дашборд
 router.get('/admin', getAdminHonePage);
 
-// Пользователи
 router.get('/admin/users', authMiddleware, getAdminUsers);
 
-// Залы
 router.get('/admin/halls', getAdminHalls);
 
-// Календарь 
 router.get('/admin/calendar', getAdminCalendar);
 
-// Статистика
 router.get('/admin/stats', getAdminStats);
 router.post('/admin/users/registerManager', createManager);
 

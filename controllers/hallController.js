@@ -71,7 +71,6 @@ export const showHalls = async (req, res) => {
 
     const halls = await BanquetHall.findAll({ where, order, limit: 12 });
 
-    // res.render('index', { halls });
     res.render('halls', {
       halls
     });

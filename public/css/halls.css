@@ -24,12 +24,12 @@ body {
   border: 1px solid #ccc;
 }
 
-/* вап */
+
 .capacity-filter input,
 .price-filter input {
-  width: 80px;          /* задаём компактную ширину */
-  padding: 8px 8px;     /* уменьшаем внутренние отступы */
-  font-size: 1.2rem;      /* уменьшаем размер шрифта */
+  width: 80px;          
+  padding: 8px 8px;     
+  font-size: 1.2rem;      
   box-sizing: border-box; 
   margin-left: 5px; 
 }
@@ -38,7 +38,7 @@ body {
 .price-filter {
   display: flex;
   align-items: center;
-  gap: 5px;  /* расстояние между label и input */
+  gap: 5px;  
 }
 
 #checkDate {
@@ -159,7 +159,6 @@ img .icons .cart-btn {
   --shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
 }
 
-/* Контейнер всех карточек */
 .hall-list {
   padding: 2rem;
 }
@@ -171,7 +170,6 @@ img .icons .cart-btn {
   justify-content: center;
 }
 
-/* Карточка */
 .hall-card {
   background: #fff;
   border-radius: 1rem;
@@ -189,7 +187,6 @@ img .icons .cart-btn {
   transform: translateY(-5px);
 }
 
-/* Фото зала */
 .hall-image {
   position: relative;
   text-align: center;
@@ -208,7 +205,6 @@ img .icons .cart-btn {
   transform: scale(1.05);
 }
 
-/* Кнопка "Подробнее" появляется при наведении */
 .hall-image .cart-btn {
   position: absolute;
   bottom: -5rem;
@@ -234,7 +230,6 @@ img .icons .cart-btn {
   background: #333;
 }
 
-/* Контент карточки */
 .hall-info {
   padding: 3rem;
   text-align: center;

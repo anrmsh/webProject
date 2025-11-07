@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
- // Календарь событий
  const calenderDate = document.getElementById('calenderDate');
  const calenderInfo = document.getElementById('calenderInfo');
 

@@ -66,7 +66,6 @@ User.hasMany(Report, {
     onDelete: 'CASCADE'
 });
 
-// Каждый отчёт принадлежит менеджеру
 Report.belongsTo(User, {
     foreignKey: 'manager_id',
     as: 'manager'

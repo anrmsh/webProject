@@ -415,19 +415,17 @@ export const exportReportExcel = async (req, res) => {
         const { start, end } = req.query;
         const managerId = req.user.user_id;
 
-        // Получаем менеджера
+       
         const manager = await User.findByPk(managerId, {
             attributes: ["first_name", "last_name"],
         });
 
-        // Получаем залы менеджера
         const halls = await BanquetHall.findAll({
             where: { manager_id: managerId },
             attributes: ["hall_id", "hall_name"],
         });
         const hallIds = halls.map((h) => h.hall_id);
 
-        // Получаем бронирования
         const data = await Booking.findAll({
             where: {
                 hall_id: { [Op.in]: hallIds },
@@ -450,11 +448,10 @@ export const exportReportExcel = async (req, res) => {
             include: [{ model: BanquetHall, attributes: ["hall_name"] }],
         });
 
-        // ===== Создаём Excel файл =====
+ 
         const workbook = new ExcelJS.Workbook();
         const sheet = workbook.addWorksheet("Отчёт по залам");
 
-        // ===== Шапка документа =====
         sheet.addRow([]);
         const orgRow = sheet.addRow(["ООО «BanquetBook»"]);
         sheet.mergeCells(`A${orgRow.number}:F${orgRow.number}`);
@@ -466,9 +463,8 @@ export const exportReportExcel = async (req, res) => {
         periodRow.font = { bold: true, size: 13 };
         periodRow.alignment = { horizontal: "center" };
 
-        sheet.addRow([]); // пустая строка между шапкой и таблицей
+        sheet.addRow([]); 
 
-        // ===== Колонки таблицы =====
         sheet.columns = [
             { header: "Зал", key: "hall_name", width: 25 },
             { header: "Кол-во бронирований", key: "bookings_count", width: 20 },
@@ -478,15 +474,12 @@ export const exportReportExcel = async (req, res) => {
             { header: "Выручка (BYN)", key: "revenue_sum", width: 15 },
         ];
 
-        // Стили для заголовков таблицы
-        //const headerRow = sheet.getRow(sheet.lastRow.number + 1);
-        sheet.addRow({}); // создаём заголовок через columns
+        sheet.addRow({}); 
         sheet.getRow(sheet.lastRow.number).eachCell((cell) => {
             cell.font = { bold: true };
             cell.alignment = { horizontal: "center", vertical: "middle", wrapText: true };
         });
 
-        // ===== Заполняем данные =====
         let totalRevenue = 0;
         let totalBookings = 0;
         let totalCompleted = 0;
@@ -516,7 +509,6 @@ export const exportReportExcel = async (req, res) => {
             totalCancelled += cancelled;
         });
 
-        // ===== Итоговая строка =====
         sheet.addRow([]);
         const totalRow = sheet.addRow({
             hall_name: "ИТОГО:",
@@ -529,7 +521,6 @@ export const exportReportExcel = async (req, res) => {
         totalRow.font = { bold: true };
         totalRow.alignment = { horizontal: "center" };
 
-        // ===== Подвал документа =====
         sheet.addRow([]);
         const footerRow = sheet.addRow([
             `Дата составления: ${new Date().toLocaleDateString("ru-RU")}`,
@@ -543,7 +534,7 @@ export const exportReportExcel = async (req, res) => {
             cell.alignment = { horizontal: "center" };
         });
 
-        // ===== Выдача файла =====
+
         res.setHeader(
             "Content-Disposition",
             `attachment; filename=report_${start}_${end}.xlsx`
@@ -562,7 +553,6 @@ export const exportReportExcel = async (req, res) => {
 };
 
 
-// новое лист ожидания
 export const getWaitingListPage = async (req, res) => {
     // try {
     //     const halls = await BanquetHall.findAll({
@@ -592,7 +582,7 @@ export const getWaitingListPage = async (req, res) => {
             where: { manager_id: req.user.user_id }
         });
 
-        // При рендере можно передать пустой waitingList — фронт сам подгрузит полный список по залу
+       
         res.render("p_manager/waitingList", { halls, waitingList: [] });
     } catch (err) {
         console.error(err);
@@ -600,7 +590,6 @@ export const getWaitingListPage = async (req, res) => {
     }
 };
 
-// === API: получить расписание и лист ожидания ===
 export const getScheduleData = async (req, res) => {
     try {
         const { hall_id, date } = req.query;
@@ -635,7 +624,6 @@ export const getScheduleData = async (req, res) => {
     }
 };
 
-// --- API: получить весь лист ожидания по залу (всегда весь, отсортирован по дате/времени/позиции) ---
 export const getWaitingListForHall = async (req, res) => {
     try {
         const { hall_id } = req.query;
@@ -675,7 +663,6 @@ export const getWaitingListForHall = async (req, res) => {
     }
 };
 
-// === API: назначить клиента из листа ожидания ===
 export const assignFromWaiting = async (req, res) => {
     // try {
     //     const waiting = await WaitingList.findByPk(req.params.id);
@@ -727,13 +714,11 @@ export const assignFromWaiting = async (req, res) => {
         const start = waiting.start_time;
         const end = waiting.end_time;
 
-        // Проверка пересечения: найти любую бронь на тот же зал/дату, у которой time overlap и которая НЕ является целевой (если передали)
         const overlapWhere = {
             hall_id,
             date,
             [Op.and]: [
                 {
-                    // start_a < end_b && end_a > start_b  => overlap
                     start_time: { [Op.lt]: end }
                 },
                 {
@@ -753,7 +738,6 @@ export const assignFromWaiting = async (req, res) => {
             return res.status(409).json({ message: "Время пересекается с существующей бронью" });
         }
 
-        // Если передан targetBookingId — обновляем её (переназначаем)
         if (targetBookingId) {
             const target = await Booking.findByPk(targetBookingId);
             if (!target) return res.status(404).json({ message: "Целевая бронь не найдена" });
@@ -767,11 +751,9 @@ export const assignFromWaiting = async (req, res) => {
                 payment_status: "unpaid"
             });
 
-            // удаляем запись из листа ожидания
             const { queue_position } = waiting;
             await waiting.destroy();
 
-            // подвинуть очередь для тех, кто был после
             await WaitingList.increment(
                 { queue_position: -1 },
                 {
@@ -786,7 +768,6 @@ export const assignFromWaiting = async (req, res) => {
             return res.json({ message: "Назначено: целевая бронь обновлена" });
         }
 
-        // Иначе — создаём новую бронь
         await Booking.create({
             client_id: waiting.client_id,
             hall_id,
@@ -820,20 +801,17 @@ export const assignFromWaiting = async (req, res) => {
 };
 
 
-// === API: получить доступные заявки из листа ожидания (без пересечений) ===
 export const getAvailableWaitingForBooking = async (req, res) => {
   try {
     const { hall_id, date } = req.query;
     if (!hall_id || !date)
       return res.status(400).json({ message: "Нужны hall_id и date" });
 
-    // Загружаем все активные брони на дату
     const bookings = await Booking.findAll({
       where: { hall_id, date },
       attributes: ["start_time", "end_time"],
     });
 
-    // Загружаем все заявки из листа ожидания
     const waitingList = await WaitingList.findAll({
       where: { hall_id, desired_date: date },
       include: [
@@ -845,7 +823,6 @@ export const getAvailableWaitingForBooking = async (req, res) => {
       order: [["queue_position", "ASC"]],
     });
 
-    // Проверка пересечений
     const available = waitingList.filter((w) => {
       const wStart = w.start_time;
       const wEnd = w.end_time;

@@ -17,7 +17,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const loginBtn = document.querySelector('.form-box.login .btn');
 
-    // Переключение форм
     const container = document.getElementById('mainContainer');
     const registerBtn = document.getElementById('registerToggle');
     const loginToggleBtn = document.getElementById('loginToggle');

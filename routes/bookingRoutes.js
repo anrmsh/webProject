@@ -16,8 +16,6 @@ import { requireAuth } from '../middleware/middleware.js';
 
 const router = express.Router();
 
-
-
 router.get('/halls/:id', getHallDetails);
 router.post('/bookings', requireAuth, createBooking);
 router.get('/bookings/slots', getHallBookingsByDate);

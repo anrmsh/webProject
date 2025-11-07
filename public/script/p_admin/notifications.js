@@ -9,28 +9,16 @@ async function updateStatus(hallId, status) {
     const data = await response.json();
 
     if (data.success) {
-      alert(`✅ ${data.message}`);
+      alert(` ${data.message}`);
       document.querySelector(`[data-id="${hallId}"]`)?.remove();
     } else {
-      alert(`⚠️ ${data.message}`);
+      alert(` ${data.message}`);
     }
   } catch (err) {
     console.error('Ошибка:', err);
     alert('Ошибка при обновлении статуса');
   }
 }
-
- 
-// document.addEventListener('click', async (e)=>{
-//     const btn = e.target.closest('button[data-action]');
-//     if(!btn) return;
-
-//     const card = btn.closest('.notification-card');
-//     const hallId = card.dataset.id;
-//     const status = btn.dataset.action;
-
-//     await updateStatus(hallId, status);
-// })
 
 document.addEventListener('click', async (e)=> {
     const btn = e.target.closest('button[data-action]');

@@ -74,11 +74,10 @@
   </div>
 
   <script>
-    // Передаем данные с сервера
+ 
     window.hallBookings = <%- JSON.stringify(hallBookings) %>;
     window.currentBooking = <%- JSON.stringify(booking) %>;
 
-    // Flatpickr только блокирует даты полностью забронированные другими
     const disabledDates = [...new Set(hallBookings.map(b => b.date.split('T')[0]))];
     flatpickr("#datePicker", {
       dateFormat: "Y-m-d",

@@ -73,7 +73,7 @@ header h1 {
 #calendarTable {
     width:100%;
     border-collapse:collapse;
-    font-size:1.2rem; /* увеличиваем текст */
+    font-size:1.2rem; 
     background:#fff;
     border-radius:8px;
     overflow:hidden;
@@ -82,7 +82,7 @@ header h1 {
 #calendarTable thead {
     background: var(--pink);
     color: #fff;
-    font-size:1.4rem; /* шрифт шапки таблицы */
+    font-size:1.4rem; 
 }
 
 #calendarTable th, #calendarTable td {
@@ -94,7 +94,7 @@ header h1 {
     min-height:90px;
     cursor:pointer;
     position:relative;
-    font-size:1.2rem; /* текст внутри ячеек */
+    font-size:1.2rem; 
 }
 
 #currentMonth {
@@ -123,7 +123,6 @@ header h1 {
     background: rgba(174,57,98,0.05);
 }
 
-/* Модальное окно */
 .modal {
     display:none;
     position:fixed;

@@ -10,7 +10,7 @@
     />
   </head>
   <body>
-    <!-- ======== HEADER ======== -->
+
     <header>
       <input type="checkbox" id="toggler" />
       <label for="toggler" class="fas fa-bars"></label>
@@ -35,14 +35,13 @@
       </div>
     </header>
 
-    <!-- ======== MAIN CONTENT ======== -->
     <main>
       <h2 class="heading">Профиль пользователя</h2>
 
       <% if (user) { %>
       <section class="profile-info">
         <div class="box-container">
-          <!-- Личные данные -->
+
           <div class="box">
             <h3>Личные данные</h3>
             <p><strong>Имя:</strong> <%= user.first_name %></p>
@@ -62,7 +61,6 @@
             <a href="/edit-profile" class="btn">Редактировать профиль</a>
           </div>
 
-          <!-- Уведомления -->
           <div class="box">
             <h3>Уведомления</h3>
             <% if (notifications && notifications.length > 0) { %> <%
@@ -75,11 +73,9 @@
         </div>
       </section>
 
-      <!-- Мои брони -->
       <section class="banquets products">
         <h3 class="heading">Мои брони</h3>
 
-        <!-- Фильтр -->
         <div class="filter-buttons">
           <button class="filter-btn" data-filter="all"><span>Все</span></button>
           <button class="filter-btn" data-filter="pending">
@@ -187,8 +183,6 @@
           <p>У вас пока нет бронирований</p>
           <% } %>
 
-          <!-- new -->
-          <!-- Лист ожидания -->
           <% if (waitingList && waitingList.length > 0) { %> <%
           waitingList.forEach(function(w) { %>
           <div
@@ -229,7 +223,6 @@
           </div>
           <% }) %> <% } %>
 
-          <!-- new -->
         </div>
       </section>
       <% } else { %>

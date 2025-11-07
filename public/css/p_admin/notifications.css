@@ -32,12 +32,11 @@ header {
 }
 
 .card-details {
-  display: none; /* по умолчанию скрыто */
+  display: none; 
   margin-top: 1rem;
 }
 
 .hall-image {
-  /* max-width: 100%; */
   border-radius: 0.5rem;
   margin: 1rem 0;
   width: 200px;

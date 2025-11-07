@@ -116,7 +116,6 @@ main h2 {
   background: var(--pink);
 }
 
-/* Модальные окна */
 .modal {
   display: none;
   position: fixed;
@@ -177,7 +176,7 @@ main h2 {
   background: #333;
 }
 
-/* Сообщение об ошибке */
+
 main p {
   text-align: center;
   font-size: 2rem;
@@ -185,7 +184,7 @@ main p {
   margin-top: 5rem;
 }
 
-/* Адаптивность */
+
 @media (max-width: 600px) {
   form#editProfileForm {
     padding: 2rem;

@@ -41,7 +41,6 @@ async function renderCalendar(date) {
     }
     calendarBody.innerHTML = html;
 
-    // Привязываем клик на даты
     document.querySelectorAll('#calendarBody td[data-date]').forEach(td => {
       
         const statusText = {
@@ -67,7 +66,6 @@ async function renderCalendar(date) {
     });
 }
 
-// Закрытие модалки
 modalClose.addEventListener('click', () => modal.style.display = 'none');
 window.addEventListener('click', e => { if (e.target === modal) modal.style.display = 'none'; });
 

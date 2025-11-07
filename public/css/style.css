@@ -21,7 +21,6 @@ html {
   overflow-x: hidden;
 }
 
-/* ---------------------- HEADER ---------------------- */
 header {
   position: fixed;
   top: 0;
@@ -80,7 +79,6 @@ header .fa-bars {
   display: none;
 }
 
-/* ---------------------- GENERAL ---------------------- */
 section {
   padding: 2rem 9%;
 }
@@ -100,7 +98,6 @@ section {
   background: var(--pink);
 }
 
-/* ---------------------- HOME ---------------------- */
 .home {
   display: flex;
   margin-top: 25px;
@@ -137,7 +134,7 @@ section {
   line-height: 1.6;
 }
 
-/* ---------------------- HEADING ---------------------- */
+
 .heading {
   text-align: center;
   font-size: 4rem;
@@ -151,7 +148,7 @@ section {
   color: var(--pink);
 }
 
-/* ---------------------- ABOUT ---------------------- */
+
 .about .row {
   display: flex;
   align-items: center;
@@ -169,7 +166,6 @@ section {
   width: 100%;
   border-radius: 0.5rem;
   box-shadow: var(--shadow);
-  /* height: 100%; */
   height: 250px;
   object-fit: cover;
   display: block;
@@ -202,7 +198,6 @@ section {
   line-height: 1.5;
 }
 
-/* ---------------------- ICONS ---------------------- */
 .icons-container {
   background: #eee;
   display: flex;
@@ -239,7 +234,6 @@ section {
   font-size: 1.4rem;
 }
 
-/* ---------------------- PRODUCTS (ЗАЛЫ) ---------------------- */
 .products .box-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -358,7 +352,6 @@ section {
   color: #666;
 }
 
-/* ---------------------- FOOTER ---------------------- */
 .footer {
   background: #f8f8f8;
   padding: 3rem 9%;
@@ -394,11 +387,9 @@ section {
 }
 
 main {
-  margin-top: 8rem; /* или подбери подходящее значение */
+  margin-top: 8rem; 
 }
 
-
-/* ---------------------- MEDIA ---------------------- */
 @media (max-width: 991px) {
   html {
     font-size: 55%;

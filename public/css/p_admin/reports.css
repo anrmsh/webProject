@@ -50,9 +50,8 @@ header .back-btn i {
   margin-right: 0.5rem;
 }
 
-/* ===== Секция отчёта ===== */
 .report-data {
-  margin: 10rem 9% 5rem; /* с учётом фиксированного хедера */
+  margin: 10rem 9% 5rem; 
 }
 
 .reports-table {
@@ -86,7 +85,6 @@ header .back-btn i {
   background: rgba(174, 57, 98, 0.1);
 }
 
-/* ===== Кнопки действий ===== */
 .btn-view,
 .btn-export {
   display: inline-block;

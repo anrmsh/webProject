@@ -21,7 +21,6 @@ html {
   overflow-x: hidden;
 }
 
-/* ---------------------- HEADER ---------------------- */
 header {
   position: fixed;
   top: 0;
@@ -80,13 +79,11 @@ header .fa-bars {
   display: none;
 }
 
-/* ---------------------- MAIN CONTENT ---------------------- */
 main {
   margin-top: 9rem;
   padding: 2rem 9%;
 }
 
-/* ---------------------- HEADINGS ---------------------- */
 .heading {
   text-align: center;
   font-size: 2.2rem;
@@ -100,7 +97,6 @@ main {
   color: var(--pink);
 }
 
-/* ---------------------- PROFILE INFO ---------------------- */
 .profile-info .box-container {
   display: flex;
   gap: 2rem;
@@ -144,7 +140,6 @@ main {
   background: var(--pink);
 }
 
-/* ---------------------- NOTIFICATIONS ---------------------- */
 .profile-info .notifications p {
   font-size: 1.5rem;
   padding: 0.5rem 0;
@@ -156,12 +151,7 @@ main {
   margin-right: 0.5rem;
 }
 
-/* ---------------------- BOOKINGS / BANQUETS ---------------------- */
 .banquets .box-container {
-  /* display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 2rem; */
-
   display: grid;
   grid-template-columns: repeat(auto-fit, 310px);
   justify-content: center;
@@ -234,26 +224,25 @@ main {
 }
 
 .booking-box[data-status="confirmed"] {
-  box-shadow: 0 0 6px 1px rgba(0, 128, 0, 0.6); /* тонкое зеленое свечение */
+  box-shadow: 0 0 6px 1px rgba(0, 128, 0, 0.6); 
 }
 
 .booking-box[data-status="pending"] {
-  box-shadow: 0 0 6px 1px rgba(255, 165, 0, 0.6); /* тонкое оранжевое свечение */
+  box-shadow: 0 0 6px 1px rgba(255, 165, 0, 0.6); 
 }
 
 .booking-box[data-status="cancelled"] {
-  box-shadow: 0 0 6px 1px rgba(255, 0, 0, 0.6); /* тонкое красное свечение */
+  box-shadow: 0 0 6px 1px rgba(255, 0, 0, 0.6); 
 }
 
 .booking-box[data-status="waiting_list"] {
-  box-shadow: 0 0 6px 1px rgba(128, 128, 128, 0.6); /* тонкое серое свечение */
+  box-shadow: 0 0 6px 1px rgba(128, 128, 128, 0.6); 
 }
 
 .booking-box[data-status="waiting_confirmation"] {
-  box-shadow: 0 0 6px 1px rgba(255, 165, 0, 0.6); /* тонкое оранжевое свечение */
+  box-shadow: 0 0 6px 1px rgba(255, 165, 0, 0.6);
 }
 
-/* ---------------------- MEDIA QUERIES ---------------------- */
 @media (max-width: 991px) {
   html {
     font-size: 55%;
@@ -329,12 +318,6 @@ main {
   margin: 5px;
 }
 
-/* .btn:hover,
-.confirm-btn:hover,
-.filter-btn:hover {
-  background: #666;
-}  */
-
 .filter-buttons {
   margin-bottom: 15px;
   text-align: center;
@@ -394,7 +377,6 @@ main {
   border: none;
 }
 
-/* my new */
 
 .rate-btn,
 .continue-btn,
@@ -417,7 +399,6 @@ main {
   background: #333;
 }
 
-/* my new */
 
 .rating-box {
   margin-top: 0.5rem;

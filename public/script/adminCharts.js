@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
  
-  // Линейный график
   const bookingsCanvas = document.getElementById('bookingsChart');
   if (bookingsCanvas) {
     const bookingsCtx = bookingsCanvas.getContext('2d');
@@ -32,7 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Гистограмма по залам
   const hallCanvas = document.getElementById('hallChart');
   if (hallCanvas && window.hallSums) {
     const hallCtx = hallCanvas.getContext('2d');

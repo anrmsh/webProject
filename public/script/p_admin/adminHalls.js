@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const headers = table.querySelectorAll('th');
     let sortDirection = Array(headers.length).fill('asc');
 
-    // ===== СОРТИРОВКА =====
     headers.forEach((th, index) => {
         th.style.cursor = 'pointer';
         th.addEventListener('click', () => {
@@ -37,7 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     } 
 
-    // ===== МОДАЛКА =====
     const rows = table.querySelectorAll('tbody tr');
     const modal = document.getElementById('hallModal');
     const closeBtn = modal.querySelector('.close-modal');
@@ -49,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const hallCapacity = document.getElementById('modalHallCapacity');
     const hallPrice = document.getElementById('modalHallPrice');
     const hallAddress = document.getElementById('modalHallAddress');
-    const hallStatusSelect = document.getElementById('modalHallStatus'); // теперь это select
+    const hallStatusSelect = document.getElementById('modalHallStatus');
     const hallManager = document.getElementById('modalHallManager');
     const saveBtn = document.getElementById('saveStatusBtn');
 
@@ -73,7 +71,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 hallAddress.textContent = hall.address || '—';
                 hallManager.textContent = hall.managerFullName || '—';
 
-                // Выбираем текущий статус
                 hallStatusSelect.value = hall.status;
 
                 modal.style.display = 'flex';
@@ -84,11 +81,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // ===== ЗАКРЫТИЕ МОДАЛКИ =====
+
     closeBtn.addEventListener('click', () => modal.style.display = 'none');
     window.addEventListener('click', e => { if (e.target === modal) modal.style.display = 'none'; });
 
-    // ===== СОХРАНЕНИЕ СТАТУСА =====
+
     saveBtn.addEventListener('click', async () => {
         if (!currentHallId) return;
 

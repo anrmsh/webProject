@@ -10,7 +10,7 @@ import {
 import bcrypt from "bcrypt";
 import { Op } from 'sequelize';
 
-// ===== Главная страница админа  =====
+//  Главная страница админа  
 export const getAdminHonePage = async (req, res) => {
     try {
         const userId = req.user.user_id;
@@ -49,7 +49,7 @@ export const getAdminHonePage = async (req, res) => {
 };
 
 
-// ===== Пользователи =====
+//  Пользователи 
 export const getAdminUsers = async (req, res) => {
 
     try {
@@ -65,7 +65,6 @@ export const getAdminUsers = async (req, res) => {
             order: [["user_id", "ASC"]],
         });
 
-        // Формируем данные для шаблона
         const usersData = users.map(u => ({
             user_id: u.user_id,
             first_name: u.first_name,
@@ -83,7 +82,7 @@ export const getAdminUsers = async (req, res) => {
     }
 };
 
-// ===== Залы =====
+//  Залы 
 export const getAdminHalls = async (req, res) => {
     try {
         const halls = await BanquetHall.findAll({
@@ -113,7 +112,7 @@ export const getAdminHalls = async (req, res) => {
     }
 };
 
-// ===== Календарь =====
+//  Календарь 
 export const getAdminCalendar = async (req, res) => {
     try {
         const today = new Date().toISOString().split('T')[0];
@@ -202,14 +201,13 @@ export const getMonthlyBookings = async (req, res) => {
 };
 
 
-// ===== Статистика =====
+//  Статистика 
 export const getAdminStats = async (req, res) => {
     try {
         const allBookings = await Booking.findAll({ include: [BanquetHall] });
         const totalBookings = allBookings.length;
         const totalRevenue = allBookings.reduce((sum, b) => sum + parseFloat(b.payment_amount || 0), 0).toFixed(2);
 
-        // График по последним 7 дням
         const chartLabels = [];
         const chartData = [];
         for (let i = 6; i >= 0; i--) {
@@ -272,7 +270,6 @@ export const createManager = async (req, res) => {
 };
 
 
-//====DELETE USER
 export const deleteUser = async (req, res) => {
     try {
         const { id } = req.params;
@@ -346,7 +343,7 @@ export const getHallById = async (req, res) => {
             address: hall.address,
             rating: hall.rating,
             status: hall.status,
-            image_path: hall.image_path, // URL фото
+            image_path: hall.image_path, 
             managerFullName: hall.manager ? `${hall.manager.first_name} ${hall.manager.last_name}` : '—'
         });
     } catch (err) {
@@ -416,7 +413,7 @@ export const getDashboardData = async (req, res) => {
             hallMap[hallName] = (hallMap[hallName] || 0) + 1;
         });
 
-        // Топ-5 залов
+      
         const topHalls = Object.entries(hallMap)
             .map(([hall_name, count]) => ({ hall_name, count }))
             .sort((a, b) => b.count - a.count)
@@ -477,10 +474,6 @@ export const getNotifications = async (req, res) => {
 };
 
 
-
-
-
-// newnewnew
 export const getReportsList = async (req, res) => {
     try {
         const reports = await Report.findAll({
@@ -509,7 +502,6 @@ export const getReportsList = async (req, res) => {
     }
 };
 
-// === Просмотр конкретного отчёта ===
 export const getReportView = async (req, res) => {
     try {
         const report = await Report.findByPk(req.params.id, {

@@ -14,7 +14,7 @@ export const getProfilePage = async (req, res) => {
         const client = await Client.findOne({ where: { user_id: req.user.user_id } });
         if (!client) return res.send('Клиент не найден');
 
-        // Получаем все бронирования этого клиента
+        
         const bookings = await Booking.findAll({
             where: { client_id: client.client_id },
             include: [{ model: BanquetHall, as: 'banquetHall' }],
@@ -54,7 +54,7 @@ export const getProfilePage = async (req, res) => {
             editable: true
         }));
 
-        // Формируем уведомления
+       
         const notifications = bookings.flatMap(booking => {
             const today = dayjs();
             const eventDate = dayjs(booking.date);
@@ -79,7 +79,6 @@ export const getProfilePage = async (req, res) => {
             return notif;
         });
 
-        // Передаем обе переменные в EJS
         console.log('Client:', client);
         console.log(req.user.user_id);
         res.render('profile', {
@@ -136,7 +135,6 @@ export const postEditProfile = async (req, res) => {
             user.login = login;
         }
 
-        // Обновляем только изменённые данные
         if (first_name && first_name !== user.first_name) user.first_name = first_name;
         if (last_name && last_name !== user.last_name) user.last_name = last_name;
         if (phone && phone !== client.phone) client.phone = phone;
@@ -146,7 +144,6 @@ export const postEditProfile = async (req, res) => {
 
         res.status(200).send('OK');
 
-        //res.redirect('/profile');
     } catch (err) {
         console.error(err);
         res.status(500).send('Ошибка при обновлении профиля');

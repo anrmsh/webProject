@@ -83,7 +83,7 @@ form {
   color: #333;
   font-weight: 500;
 }
-/* jhk */
+
 
 .input-box select {
   width: 100%;
@@ -190,7 +190,6 @@ form {
   position: absolute;
   width: 50%;
   height: 100%;
-  /* background: seagreen; */
   color: #fff;
   display: flex;
   flex-direction: column;
@@ -295,12 +294,10 @@ form {
 }
 
 .error-message {
-  max-height: 100px;   /* ограничение по высоте */
-  overflow-y: auto;    /* вертикальная прокрутка */
+  max-height: 100px;   
+  overflow-y: auto;    
 }
 
-
-/* Анимация тряски кнопки */
 @keyframes shake-btn {
   0% { transform: translateX(0); }
   20% { transform: translateX(-5px); }
@@ -312,5 +309,5 @@ form {
 
 .btn.shake {
   animation: shake-btn 0.4s;
-  background-color: #e74c3c; /* красная кнопка при ошибке */
+  background-color: #e74c3c; 
 }

@@ -38,7 +38,6 @@ export const showHomePage = async (req, res) => {
 
     const halls = await BanquetHall.findAll({ where, order, limit: 6 });
 
-    // res.render('index', { halls });
     res.render('index', {
     halls,
     user: req.user || null

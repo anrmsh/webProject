@@ -9,7 +9,6 @@ const passwordModal = document.getElementById("passwordModal");
 const passwordSaveBtn = document.getElementById("passwordSaveBtn");
 const passwordCancelBtn = document.getElementById("passwordCancelBtn");
 
-// --- Подтверждение сохранения профиля ---
 saveBtn.addEventListener("click", () => {
     confirmModal.style.display = "flex";
 });
@@ -35,7 +34,7 @@ confirmYes.addEventListener('click', async () => {
             window.location.href = '/profile';
         } else {
             const text = await res.text();
-            alert(text); // Покажет, например: "Пользователь с таким логином уже существует"
+            alert(text); 
         }
     } catch (err) {
         console.error(err);
@@ -44,7 +43,7 @@ confirmYes.addEventListener('click', async () => {
 });
  
 
-// --- Смена пароля ---
+
 changePasswordBtn.addEventListener("click", () => {
     passwordModal.style.display = "flex";
 });

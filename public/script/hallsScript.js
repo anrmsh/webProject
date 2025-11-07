@@ -14,11 +14,9 @@ const filters = {
 function applyFilters() {
     let filtered = cards;
 
-    // Поиск
     const searchValue = filters.search.value.toLowerCase().trim();
     if (searchValue) filtered = filtered.filter(c => c.dataset.name.includes(searchValue));
 
-    // Вместимость
     const capMin = parseInt(filters.capacityMin.value) || 0;
     const capMax = parseInt(filters.capacityMax.value) || Infinity;
     filtered = filtered.filter(c => {
@@ -26,7 +24,6 @@ function applyFilters() {
         return cap >= capMin && cap <= capMax;
     });
 
-    // Цена
     const priceMin = parseInt(filters.priceMin.value) || 0;
     const priceMax = parseInt(filters.priceMax.value) || Infinity;
     filtered = filtered.filter(c => {
@@ -34,7 +31,6 @@ function applyFilters() {
         return price >= priceMin && price <= priceMax;
     });
 
-    // Сортировка
     const sort = filters.sort.value;
     if (sort) {
         filtered.sort((a, b) => {
@@ -50,12 +46,10 @@ function applyFilters() {
         });
     }
 
-    // Перерисовываем карточки
     container.innerHTML = '';
     filtered.forEach(c => container.appendChild(c));
 }
 
-// Навешиваем события
 Object.values(filters).forEach(input => {
     input.addEventListener('input', applyFilters);
 });
@@ -85,7 +79,6 @@ filters.capacityMax.addEventListener('input', () => {
     }
 })
 
-// Проверка доступности залов по дате
 document.getElementById('checkDate').addEventListener('click', async () => {
     const date = document.getElementById('date').value;
     if (!date) return alert('Выберите дату!');

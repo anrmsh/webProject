@@ -42,13 +42,9 @@ router.post("/report/save", saveReport);
 router.get('/report/export', exportReportExcel);
 
 
-// router.get("/waiting-list", getWaitingListPage);
-// router.get("/api/waiting-list", getScheduleData);
-// router.post("/api/assign-waiting/:id",  assignFromWaiting);
-
-router.get("/waiting-list", getWaitingListPage);              // страница
-router.get("/api/schedule", getScheduleData);                 // расписание на дату
-router.get("/api/waiting-list", getWaitingListForHall);       // полный лист ожидания по залу
+router.get("/waiting-list", getWaitingListPage);            
+router.get("/api/schedule", getScheduleData);                
+router.get("/api/waiting-list", getWaitingListForHall);       
 router.post("/api/assign-waiting/:id", assignFromWaiting);  
 router.get("/api/waiting-list/available", getAvailableWaitingForBooking);
 

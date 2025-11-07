@@ -343,15 +343,12 @@ main {
 
 
 
-
-/* новое карточки */
-/* ===== КАРТОЧКИ ===== */
 .dashboard-cards {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
-  max-width: 700px; /* ширина как у профиля */
-  margin: 2rem auto; /* центрирование */
+  max-width: 700px; 
+  margin: 2rem auto; 
 }
 
 .dashboard-cards .card {
@@ -386,7 +383,6 @@ main {
   margin-top: 0.4rem;
 }
 
-/* Адаптация для телефона */
 @media (max-width: 700px) {
   .dashboard-cards {
     grid-template-columns: 1fr;

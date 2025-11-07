@@ -33,9 +33,7 @@
             />
             <i class="bx bxs-lock"></i>
           </div>
-          <!-- <div class="forgot-link">
-          <a href="#">Забыли пароль?</a>
-        </div> -->
+
           <% if (message) { %>
           <div class="error-message"><%= message %></div>
           <script>
@@ -46,7 +44,6 @@
         </form>
       </div>
 
-      <!-- ======== Форма регистрации ======== -->
       <div class="form-box register">
         <form action="/register" method="POST">
           <h1>Регистрация</h1>
@@ -98,7 +95,6 @@
         </form>
       </div>
 
-      <!-- ======== Блок переключения (Toggle) ======== -->
       <div class="toggle-box">
         <div class="toggle-pannel toggle-left">
           <h1>BanquetBook</h1>
@@ -116,18 +112,6 @@
     </div>
 
     <script src="/script/scriptLogin.js"></script>
-    <!-- <script>
-      // ======== Переключение между входом и регистрацией ========
-      const container = document.getElementById("mainContainer");
-      const registerBtn = document.getElementById("registerToggle");
-      const loginBtn = document.getElementById("loginToggle");
 
-      registerBtn.addEventListener("click", () =>
-        container.classList.add("active")
-      );
-      loginBtn.addEventListener("click", () =>
-        container.classList.remove("active")
-      );
-    </script>  -->
   </body>
 </html>

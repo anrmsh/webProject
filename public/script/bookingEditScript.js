@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
         endSelect.innerHTML = '';
 
         slots.forEach(time => {
-            // Начало
+          
             const startOption = document.createElement('option');
             startOption.value = time;
             startOption.textContent = time;
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (time === booking.start_time.slice(0,5)) startOption.selected = true;
             startSelect.appendChild(startOption);
 
-            // Конец
+           
             const endOption = document.createElement('option');
             endOption.value = time;
             endOption.textContent = time;
@@ -113,7 +113,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     endSelect.addEventListener('change', validateSelectedTime);
 
-    // Расчет суммы с услугами
     const serviceCheckboxes = document.querySelectorAll('.service-checkbox');
     const totalText = document.getElementById('totalPrice');
     const hallPrice = parseFloat(document.getElementById('hallPrice').value);

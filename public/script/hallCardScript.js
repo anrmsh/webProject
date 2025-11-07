@@ -1,5 +1,5 @@
 (function () {
-  // ====== Данные из EJS ======
+
   const { hall, disabledDates } = window.__INITIAL_DATA__ || {};
   const basePrice = parseFloat(hall?.price ?? 0);
 
@@ -21,8 +21,6 @@
 
   let currentDateSlots = [];
 
-
-  // ===== Flatpickr с учётом локального времени =====
   flatpickr(dateInput, {
     dateFormat: "Y-m-d",
     locale: flatpickr.l10ns.ru,
@@ -41,7 +39,6 @@
     }
   });
 
-  // ====== Пересчёт стоимости ======
   function recalcTotal() {
     let total = basePrice;
     serviceCheckboxes.forEach(cb => {
@@ -52,7 +49,6 @@
   serviceCheckboxes.forEach(cb => cb.addEventListener('change', recalcTotal));
   recalcTotal();
 
-  // ====== Время ======
   function timeToMinutes(t) {
     if (!t) return null;
     const [hh, mm] = t.split(':').map(Number);
@@ -66,7 +62,6 @@
     return Math.max(A1, B1) < Math.min(A2, B2);
   }
 
-  // ====== Загрузка слотов ======
   async function fetchSlotsForDate(date) {
     if (!date) return { slots: [], fullDayBooked: false };
     try {
@@ -178,7 +173,6 @@
 
   modal?.addEventListener('click', e => { if (e.target === modal) modal.style.display = 'none'; });
 
-  // ====== Модальное окно подтверждения ======
   function showSuccessModal(message) {
     const successModal = document.getElementById('successModal');
     const successMsg = document.getElementById('successMessageText');
@@ -195,7 +189,6 @@
     };
   }
 
-  // ====== Отправка формы ======
   form.addEventListener('submit', async (ev) => {
     ev.preventDefault();
 
@@ -222,7 +215,6 @@
         return;
       }
 
-      // успешное бронирование
       showSuccessModal(data.message || 'Бронирование успешно создано!');
       modal.style.display = 'none';
     } catch (err) {
@@ -231,7 +223,6 @@
     }
   });
 
-  // ====== Лист ожидания ======
   waitListBtn.addEventListener('click', async () => {
     const fd = new FormData(form);
     const payload = {
@@ -254,7 +245,6 @@
         return;
       }
 
-      // успешное добавление в лист ожидания
       showSuccessModal(data.message || 'Вы добавлены в лист ожидания!');
       modal.style.display = 'none';
     } catch (err) {

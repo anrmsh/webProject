@@ -12,8 +12,6 @@ import bookingRoutes from './routes/bookingRoutes.js'
 import { authMiddleware } from './middleware/middleware.js';
 import cookieParser from 'cookie-parser';
 
-// import bookingRoutes from './routes/bookingRoutes.js';
-
 dotenv.config();
 
 const app = express();
@@ -34,7 +32,7 @@ app.use('/', ratingRoutes);
 app.use('/',adminRoutes);
 app.use('/manager',managerRoutes);
 
-// app.use('/bookings', bookingRoutes);
+
 
 sequelize.authenticate()
   .then(() => console.log('✅ DB connected'))
