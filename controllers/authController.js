@@ -11,7 +11,12 @@ export const registerUser = async (req, res) => {
 
         const existingUser = await User.findOne({ where: { login } });
         if (existingUser) {
-            return res.render("login", { message: "Такой логин уже существует" });
+            return res.render("login", {
+                message: "Такой логин уже существует",
+                showRegister: true,
+                invalidLogin: true,
+                 formData: req.body
+            });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);

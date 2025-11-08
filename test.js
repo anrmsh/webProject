@@ -7,10 +7,10 @@ try {
     await sequelize.authenticate();
     console.log('✅ Подключение к БД установлено!');
 
-   
+
     const halls = await BanquetHall.findAll({
-        attributes: ['hall_id', 'hall_name', 'capacity', 'price', 'status'], 
-        order: [['price', 'ASC']] 
+        attributes: ['hall_id', 'hall_name', 'capacity', 'price', 'status'],
+        order: [['price', 'ASC']]
     });
 
 
